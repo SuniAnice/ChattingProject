@@ -17,7 +17,7 @@ using namespace std;
 #pragma comment( lib, "Ws2_32.lib" )
 
 
-class SocketInfo
+class Session
 {
 public:
 	SOCKET m_socket;
@@ -25,15 +25,16 @@ public:
 	char m_buffer[ BUFFER_SIZE + 1 ];
 	int m_recvBytes;
 	int m_sendBytes;
+	bool m_isProcessing;
 
-	SocketInfo() = delete;
+	Session() = delete;
 
-	SocketInfo( SOCKET sock, PCSTR ip ) : m_socket( sock ), m_ip( ip ), m_recvBytes( 0 ), m_sendBytes( 0 )
+	Session( SOCKET sock, PCSTR ip ) : m_socket( sock ), m_ip( ip ), m_recvBytes( 0 ), m_sendBytes( 0 )
 	{
 		ZeroMemory( m_buffer, BUFFER_SIZE + 1 );
 	}
 
-	~SocketInfo() {}
+	~Session() {}
 
 	int Recv();
 

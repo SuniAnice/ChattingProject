@@ -1,6 +1,6 @@
 
 
-#include "socketinfo.h"
+#include "Session.h"
 #include <iostream>
 #include <unordered_map>
 #include <vector>
@@ -35,7 +35,7 @@ int main()
 
 	FD_SET readSet, writeSet;
 	SOCKADDR_IN clientAddress;
-	vector< SocketInfo* > userSockets;
+	vector< Session* > userSockets;
 	int retVal;
 
 	while ( true ) {
@@ -45,10 +45,7 @@ int main()
 
 		for ( auto &m_socket : userSockets )
 		{
-			if ( m_socket->m_recvBytes > m_socket->m_sendBytes )
-				FD_SET( m_socket->m_socket, &writeSet );
-			else
-				FD_SET( m_socket->m_socket, &readSet );
+			FD_SET( m_socket->m_socket, &readSet );
 		}
 
 		if ( select( 0, &readSet, &writeSet, NULL, NULL ) == SOCKET_ERROR )
@@ -72,7 +69,7 @@ int main()
 				char buf[ 32 ];
 				auto ip = inet_ntop( AF_INET, &clientAddress.sin_addr, buf, sizeof(buf) );
 				cout << "클라이언트 접속 : " << ip << endl;
-				SocketInfo* info = new SocketInfo( clientSocket, ip );
+				Session* info = new Session( clientSocket, ip );
 				info->SendChat( "안녕하세요. 채팅 서버에 오신 것을 환영합니다.\r\n" );
 				userSockets.push_back( info );
 			}
@@ -104,6 +101,8 @@ int main()
 					iter = userSockets.erase( iter );
 					continue;
 				}			
+				if ( sock->m_isProcessing )
+					FD_SET( sock->m_socket, &writeSet );
 			}
 
 			// send
