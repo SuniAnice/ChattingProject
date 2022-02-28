@@ -13,15 +13,6 @@ vector< Session* > g_userSockets;
 using namespace std;
 
 
-void BroadcastMessage( const string &message )
-{
-	for ( auto& user : g_userSockets )
-	{
-		user->SendChat( message );
-	}
-}
-
-
 int main()
 {
 	WSADATA wsaData;
@@ -60,7 +51,6 @@ int main()
 		if ( select( 0, &readSet, &writeSet, NULL, NULL ) == SOCKET_ERROR )
 		{
 			cout << "select error" << endl;
-			return -1;
 		}
 
 		// accept 처리
@@ -118,16 +108,14 @@ int main()
 			// send
 			if ( FD_ISSET( sock->m_socket, &writeSet ) )
 			{
-				// 닉네임이 없으면 닉네임 설정
-				if ( !sock->m_isNameSet )
+				if ( sock->m_isInLobby )
 				{
-					sock->SetName();
+					sock->ProcessCommand();
 				}
 				else
 				{
-					string chatting = sock->m_name + " : " + sock->m_buffer;
-					BroadcastMessage( chatting );
-					sock->InitializeBuffer();
+					// 채팅 메시지 브로드캐스팅
+					sock->BroadcastMessage( g_userSockets );
 				}
 			}
 			iter++;

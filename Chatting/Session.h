@@ -5,6 +5,7 @@
 
 #include <WS2tcpip.h>
 #include <string>
+#include <vector>
 
 
 #define BUFFER_SIZE 1024
@@ -28,9 +29,11 @@ public:
 	bool m_isProcessing;
 	// 플레이어 정보
 	bool m_isNameSet = false;
+	bool m_isInLobby = false;
+	int m_roomNumber = 0;
 	string m_name;
 
-	Session() = delete;
+	Session() {}
 
 	Session( SOCKET sock, PCSTR ip ) : m_socket( sock ), m_ip( ip ), m_recvBytes( 0 )
 	{
@@ -47,5 +50,8 @@ public:
 
 	bool SetName();
 
+	void BroadcastMessage( const vector< Session* > container);
+
+	void ProcessCommand();
 	
 };
