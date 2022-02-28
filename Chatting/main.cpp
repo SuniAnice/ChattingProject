@@ -1,8 +1,8 @@
 
 
+#include "CommonFunctions.h"
 #include "Session.h"
 #include <iostream>
-#include <unordered_map>
 #include <vector>
 
 
@@ -57,7 +57,7 @@ int main()
 		if ( FD_ISSET( listenSocket, &readSet ) )
 		{
 			int addressSize = sizeof( clientAddress );
-			SOCKET clientSocket = WSAAccept( listenSocket, reinterpret_cast< sockaddr* >( &clientAddress ),&addressSize, NULL, NULL );
+			SOCKET clientSocket = WSAAccept( listenSocket, reinterpret_cast< sockaddr* >( &clientAddress ), &addressSize, NULL, NULL );
 			if ( clientSocket == INVALID_SOCKET )
 			{
 				cout << "accept error" << endl;
@@ -110,7 +110,8 @@ int main()
 			{
 				if ( sock->m_isInLobby )
 				{
-					sock->ProcessCommand();
+					// 명령어 처리
+					ProcessCommand( g_userSockets, *sock );
 				}
 				else
 				{
