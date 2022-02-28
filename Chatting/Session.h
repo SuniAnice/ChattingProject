@@ -25,7 +25,6 @@ public:
 	PCSTR m_ip;
 	char m_buffer[ BUFFER_SIZE + 1 ];
 	int m_recvBytes;
-	int m_sendBytes;
 	bool m_isProcessing;
 	// 플레이어 정보
 	bool m_isNameSet = false;
@@ -33,19 +32,20 @@ public:
 
 	Session() = delete;
 
-	Session( SOCKET sock, PCSTR ip ) : m_socket( sock ), m_ip( ip ), m_recvBytes( 0 ), m_sendBytes( 0 )
+	Session( SOCKET sock, PCSTR ip ) : m_socket( sock ), m_ip( ip ), m_recvBytes( 0 )
 	{
 		ZeroMemory( m_buffer, BUFFER_SIZE + 1 );
 	}
 
 	~Session() {}
 
-	int Recv();
+	void InitializeBuffer();
 
-	int Send();
+	int Recv();
 
 	int SendChat( const string message ) const;
 
 	bool SetName();
+
 	
 };

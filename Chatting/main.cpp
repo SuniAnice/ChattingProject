@@ -13,6 +13,15 @@ vector< Session* > g_userSockets;
 using namespace std;
 
 
+void BroadcastMessage( const string &message )
+{
+	for ( auto& user : g_userSockets )
+	{
+		user->SendChat( message );
+	}
+}
+
+
 int main()
 {
 	WSADATA wsaData;
@@ -116,16 +125,9 @@ int main()
 				}
 				else
 				{
-					retVal = sock->Send();
-					if (retVal == SOCKET_ERROR)
-					{
-						// 컨테이너에서 유저 소켓 삭제
-						cout << "recv error" << endl;
-						cout << "클라이언트 접속종료 : " << sock->m_ip << endl;
-						delete ( *iter );
-						iter = g_userSockets.erase( iter );
-						continue;
-					}
+					string chatting = sock->m_name + " : " + sock->m_buffer;
+					BroadcastMessage( chatting );
+					sock->InitializeBuffer();
 				}
 			}
 			iter++;
