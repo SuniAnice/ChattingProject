@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CommonFunctions.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Session.cpp" />
   </ItemGroup>

@@ -6,7 +6,6 @@
 #include <vector>
 
 
-int g_Sockets = 0;
 vector< Session* > g_userSockets;
 
 
