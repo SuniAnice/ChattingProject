@@ -7,6 +7,7 @@
 
 
 int g_Sockets = 0;
+vector< Session* > g_userSockets;
 
 
 using namespace std;
@@ -35,7 +36,6 @@ int main()
 
 	FD_SET readSet, writeSet;
 	SOCKADDR_IN clientAddress;
-	vector< Session* > userSockets;
 	int retVal;
 
 	while ( true ) {
@@ -43,7 +43,7 @@ int main()
 		FD_ZERO( &writeSet );
 		FD_SET( listenSocket, &readSet );
 
-		for ( auto &m_socket : userSockets )
+		for ( auto &m_socket : g_userSockets )
 		{
 			FD_SET( m_socket->m_socket, &readSet );
 		}
@@ -71,12 +71,13 @@ int main()
 				cout << "클라이언트 접속 : " << ip << endl;
 				Session* info = new Session( clientSocket, ip );
 				info->SendChat( "안녕하세요. 채팅 서버에 오신 것을 환영합니다.\r\n" );
-				userSockets.push_back( info );
+				info->SendChat( "사용하실 닉네임을 입력해주세요.\r\n" );
+				g_userSockets.push_back( info );
 			}
 		}
 
 		// 데이터 통신
-		for ( auto iter = userSockets.begin(); iter != userSockets.end(); )
+		for ( auto iter = g_userSockets.begin(); iter != g_userSockets.end(); )
 		{
 			auto sock = ( *iter );
 
@@ -90,7 +91,7 @@ int main()
 					cout << "recv error" << endl;
 					cout << "클라이언트 접속종료 : " << sock->m_ip << endl;
 					delete ( *iter );
-					iter = userSockets.erase( iter );
+					iter = g_userSockets.erase( iter );
 					continue;
 				}
 				else if ( retVal == 0 )
@@ -98,7 +99,7 @@ int main()
 					// 컨테이너에서 유저 소켓 삭제
 					cout << "클라이언트 접속종료 : " << sock->m_ip << endl;
 					delete ( *iter );
-					iter = userSockets.erase( iter );
+					iter = g_userSockets.erase( iter );
 					continue;
 				}			
 				if ( sock->m_isProcessing )
@@ -108,15 +109,23 @@ int main()
 			// send
 			if ( FD_ISSET( sock->m_socket, &writeSet ) )
 			{
-				retVal = sock->Send();
-				if ( retVal == SOCKET_ERROR )
+				// 닉네임이 없으면 닉네임 설정
+				if ( !sock->m_isNameSet )
 				{
-					// 컨테이너에서 유저 소켓 삭제
-					cout << "recv error" << endl;
-					cout << "클라이언트 접속종료 : " << sock->m_ip << endl;
-					delete ( *iter );
-					iter = userSockets.erase( iter );
-					continue;
+					sock->SetName();
+				}
+				else
+				{
+					retVal = sock->Send();
+					if (retVal == SOCKET_ERROR)
+					{
+						// 컨테이너에서 유저 소켓 삭제
+						cout << "recv error" << endl;
+						cout << "클라이언트 접속종료 : " << sock->m_ip << endl;
+						delete ( *iter );
+						iter = g_userSockets.erase( iter );
+						continue;
+					}
 				}
 			}
 			iter++;

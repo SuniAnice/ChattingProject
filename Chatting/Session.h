@@ -20,12 +20,16 @@ using namespace std;
 class Session
 {
 public:
+	// 소켓 통신을 위한 정보
 	SOCKET m_socket;
 	PCSTR m_ip;
 	char m_buffer[ BUFFER_SIZE + 1 ];
 	int m_recvBytes;
 	int m_sendBytes;
 	bool m_isProcessing;
+	// 플레이어 정보
+	bool m_isNameSet = false;
+	string m_name;
 
 	Session() = delete;
 
@@ -41,5 +45,7 @@ public:
 	int Send();
 
 	int SendChat( const string message ) const;
+
+	bool SetName();
 	
 };
