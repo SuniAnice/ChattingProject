@@ -1,5 +1,6 @@
 
 
+#include "ChattingScene.h"
 #include "CommonFunctions.h"
 
 
@@ -20,6 +21,7 @@ void ProcessCommand( const vector<Session*>& container, Session& sock )
 	{
 		sock.m_isInLobby = false;
 		BroadcastMessage( container, sock.m_name + "님이 대화방에 입장했습니다.\r\n" );
+		sock.m_currentScene->ChangeScene();
 	}
 		break;
 	case 'X':

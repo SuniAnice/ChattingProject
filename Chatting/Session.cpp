@@ -9,11 +9,6 @@ int Session::Recv()
 	m_recvBytes += retVal;
 	if ( m_buffer[ m_recvBytes - 1 ] == '\n' )
 	{
-		// 개행 문자이면 패킷 처리
-		if (!m_isNameSet)
-		{
-			SetName();
-		}
 		m_isProcessing = true;
 	}
 	return retVal;

@@ -3,6 +3,7 @@
 #pragma once
 
 
+#include "Scene.h"
 #include <WS2tcpip.h>
 #include <string>
 #include <vector>
@@ -32,6 +33,7 @@ public:
 	char m_buffer[ BUFFER_SIZE + 1 ];
 	bool m_isProcessing;
 	// 플레이어 정보
+	Scene* m_currentScene;
 	bool m_isInLobby = true;
 	string m_name;
 

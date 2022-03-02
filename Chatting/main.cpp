@@ -1,6 +1,7 @@
 
 
 #include "CommonFunctions.h"
+#include "LoginScene.h"
 #include "Session.h"
 #include <iostream>
 #include <vector>
@@ -70,6 +71,7 @@ int main()
 				Session* info = new Session( clientSocket, ip );
 				info->SendChat( "안녕하세요. 채팅 서버에 오신 것을 환영합니다.\r\n" );
 				info->SendChat( "사용하실 닉네임을 입력해주세요.\r\n" );
+				info->m_currentScene = new LoginScene( info );
 				g_userSockets.push_back( info );
 			}
 		}
@@ -107,16 +109,7 @@ int main()
 			// send
 			if ( FD_ISSET( sock->m_socket, &writeSet ) )
 			{
-				if ( sock->m_isInLobby )
-				{
-					// 명령어 처리
-					ProcessCommand( g_userSockets, *sock );
-				}
-				else
-				{
-					// 채팅 메시지 브로드캐스팅
-					sock->BroadcastMessage( g_userSockets );
-				}
+				sock->m_currentScene->ExecutionInput( g_userSockets );
 			}
 			iter++;
 		}
