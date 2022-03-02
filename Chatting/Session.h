@@ -44,16 +44,21 @@ public:
 
 	~Session();
 
+	// 버퍼에 입력된 값을 초기화하는 함수
 	void InitializeBuffer();
 
+	// 데이터 수신 함수
 	int Recv();
 
+	// 해당 세션의 플레이어에게 메시지를 전송하는 함수
 	int SendChat( const string& message ) const;
 
+	// 플레이어의 이름 세팅 함수
 	bool SetName();
 
+	// 해당 세션의 플레이어가 같은 컨테이너에 있는 플레이어들에게 메시지를 전송하는 함수
 	void BroadcastMessage();
 
+	// 플레이어로부터 받은 입력을 바탕으로, 명령어를 실행하는 함수
 	bool ProcessCommand();
-	
 };

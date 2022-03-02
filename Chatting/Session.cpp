@@ -21,10 +21,12 @@ int Session::Recv()
 {
 	int retVal = recv( m_socket, m_buffer + m_recvBytes, BUFFER_SIZE - m_recvBytes, 0 );
 	m_recvBytes += retVal;
+	// 엔터키가 입력되었을 경우
 	if ( m_buffer[ m_recvBytes - 1 ] == '\n' )
 	{
 		m_isProcessing = true;
 	}
+	// 백스페이스가 입력되었을 경우
 	if ( m_buffer[ m_recvBytes - 1 ] == '\b' && m_recvBytes > 1 )
 	{
 		m_buffer[ m_recvBytes - 1 ] = '\0';
@@ -47,6 +49,7 @@ bool Session::SetName()
 	stream.str( m_buffer );
 	stream >> m_name;
 
+	// 중복된 닉네임이 있는지 체크 후, 없다면 컨테이너에 등록
 	if ( m_server->m_userNames.count( m_name ) == 0 )
 	{
 		m_isNameSet = true;
@@ -61,13 +64,13 @@ bool Session::SetName()
 	}
 	
 	InitializeBuffer();
-
 	return true;
 }
 
 void Session::BroadcastMessage()
 {
 	string chatting = m_name + " : " + m_buffer;
+	// 현재 플레이어가 접속한 대화방의 모든 플레이어에게 버퍼의 내용 전송
 	for ( auto& user : m_server->m_rooms[ m_roomNumber ].m_chatters )
 	{
 		user->SendChat( chatting );

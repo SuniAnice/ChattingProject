@@ -103,7 +103,8 @@ int main()
 					delete ( *iter );
 					iter = server.m_userSockets.erase( iter );
 					continue;
-				}			
+				}	
+				// 사용자의 입력을 처리할 필요가 있을 경우
 				if ( sock->m_isProcessing )
 					FD_SET( sock->m_socket, &writeSet );
 			}
