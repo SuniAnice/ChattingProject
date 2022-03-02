@@ -3,7 +3,6 @@
 #include "ChattingScene.h"
 #include "ChattingServer.h"
 #include "CommonFunctions.h"
-#include <sstream>
 
 
 void SystemMessage( const vector<Session*>& container, const string& message )

@@ -165,9 +165,30 @@ bool Session::ProcessCommand()
 		SendChat( message );
 	}
 	break;
+	case 't':
+	case 'T':
+	{
+		// 귓속말 처리
+		string receiver;
+		string message;
+
+		stream >> receiver;
+		// 해당 닉네임을 가진 사람이 존재할 경우
+		if ( m_server->m_userNames.count( receiver ) != 0 )
+		{
+			stream >> message;
+			m_server->m_userNames[ receiver ]->SendChat( m_name + "님의 귓속말 : " + message + "\r\n" );
+		}
+		else
+		{
+			SendChat( "귓속말 명령어 : t [닉네임] [할 말] (해당 닉네임이 존재하지 않습니다)\r\n" );
+		}
+
+	}
+		break;
 	default:
 	{
-		SendChat( "----------------------------------------------------\r\n로비에 오신 것을 환영합니다\r\n----------------------------------------------------\r\n방 만들기(A) 플레이어 목록(L) 방 목록(o) 방 입장(J) 나가기(X)\r\n" );
+		SendChat( "----------------------------------------------------\r\n로비에 오신 것을 환영합니다\r\n----------------------------------------------------\r\n방 만들기(A) 플레이어 목록(L) 귓속말(T) 방 목록(o) 방 입장(J) 나가기(X)\r\n" );
 	}
 	break;
 	}

@@ -109,7 +109,7 @@ int main()
 			// send
 			if ( FD_ISSET( sock->m_socket, &writeSet ) )
 			{
-				// 현재 Scene에 맞는 입력 처리
+				// 현재 Scene에 맞는 입력 처리 -> false인 경우에는 플레이어 접속 종료
 				if ( !sock->m_currentScene->ExecutionInput() )
 				{
 					// 컨테이너에서 유저 소켓 삭제
