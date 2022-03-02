@@ -24,6 +24,7 @@ bool LoginScene::ExecutionInput()
 
 void LoginScene::ChangeScene()
 {
+	// 로그인에 성공하면 로비로 씬 전환
 	parent->m_currentScene = new LobbyScene( parent );
 	delete this;
 }
