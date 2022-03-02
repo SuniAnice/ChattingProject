@@ -9,8 +9,15 @@
 
 bool ChattingScene::ExecutionInput()
 {
-	parent->BroadcastMessage();
-	return true;
+	if ( parent->m_buffer[ 0 ] != '/' )
+	{
+		parent->BroadcastMessage();
+		return true;
+	}
+	else
+	{
+		return parent->ProcessCommand();
+	}
 }
 
 void ChattingScene::ExitScene()

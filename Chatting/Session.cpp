@@ -73,15 +73,25 @@ void Session::InitializeBuffer()
 bool Session::ProcessCommand()
 {
 	stringstream stream;
-	string op;
 	stream.str( m_buffer );
-	stream >> op;
-	switch ( m_buffer[ 0 ] )
+	string tmp;
+	// 스트림에서 명령어 제거
+	stream >> tmp;
+
+	bool isInRoom = (m_roomNumber != 0);
+	char* ptr = &m_buffer[ 0 ];
+	// 방 안일 경우 / 뒤를 명령어로 인식함
+	switch ( *(ptr + isInRoom) )
 	{
 	case 'a':
 	case 'A':
 	{
 		// 방 만들기
+		if ( isInRoom )
+		{
+			SendChat( "잘못된 명령어 입력입니다.\r\n" );
+			break;
+		}
 		string name;
 		int max = -1;
 		stream >> max;
@@ -108,6 +118,11 @@ bool Session::ProcessCommand()
 	case 'J':
 	{
 		// 방 입장
+		if ( isInRoom )
+		{
+			SendChat( "잘못된 명령어 입력입니다.\r\n" );
+			break;
+		}
 		int roomNum = -1;
 		stream >> roomNum;
 		// 방이 존재하는지 체크
@@ -137,7 +152,18 @@ bool Session::ProcessCommand()
 	case 'x':
 	{
 		// 종료
-		if ( m_buffer[ 1 ] == '\r' && m_buffer[ 2 ] == '\n' )	closesocket( m_socket );
+		if ( isInRoom )
+		{
+			if ( *( ptr + 2 ) == '\r' && *( ptr + 3 ) == '\n' )
+			{
+				m_currentScene->ExitScene();
+				closesocket( m_socket );
+			}
+		}
+		else
+		{
+			if ( *( ptr + 1 ) == '\r' && *( ptr + 2 ) == '\n' )	closesocket( m_socket );
+		}
 		return false;
 	}
 	break;
@@ -223,6 +249,7 @@ bool Session::ProcessCommand()
 		if ( m_server->m_userNames.count( receiver ) != 0 )
 		{
 			stream >> message;
+			SendChat( receiver + "님에게 귓속말 : " + message + "\r\n" );
 			m_server->m_userNames[ receiver ]->SendChat( m_name + "님의 귓속말 : " + message + "\r\n" );
 		}
 		else
@@ -232,9 +259,22 @@ bool Session::ProcessCommand()
 
 	}
 		break;
+	case 'q':
+	case 'Q':
+	{
+		// 방 퇴장
+		if ( !isInRoom )
+		{
+			SendChat( "잘못된 명령어 입력입니다.\r\n" );
+			break;
+		}
+		m_currentScene->ExitScene();
+	}
+		break;
 	default:
 	{
-		SendChat( "----------------------------------------------------\r\n로비에 오신 것을 환영합니다\r\n----------------------------------------------------\r\n방 만들기(a) 플레이어 목록(L) 플레이어 정보(i) 귓속말(t) 방 목록(o) 방 정보(p) 방 입장(j) 나가기(X)\r\n" );
+		if ( isInRoom )	SendChat( "플레이어 목록(L) 플레이어 정보(i) 귓속말(t) 방 목록(o) 방 정보(p) 방 퇴장(q) 나가기(X)\r\n" );
+		else			SendChat( "----------------------------------------------------\r\n로비에 오신 것을 환영합니다\r\n----------------------------------------------------\r\n방 만들기(a) 플레이어 목록(L) 플레이어 정보(i) 귓속말(t) 방 목록(o) 방 정보(p) 방 입장(j) 나가기(X)\r\n" );
 	}
 	break;
 	}
