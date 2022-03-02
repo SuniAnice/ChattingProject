@@ -165,6 +165,28 @@ bool Session::ProcessCommand()
 		SendChat( message );
 	}
 	break;
+	case 'i':
+	case 'I':
+	{
+		// 플레이어 정보 보기
+		string player;
+		stream >> player;
+		if ( m_server->m_userNames.count( player ) != 0 )
+		{
+			string message = "해당 플레이어의 정보를 출력합니다.\r\n";
+			message = message + "닉네임 : " + player + "	ip : " + m_server->m_userNames[player]->m_ip + "	위치 : ";
+			// 로비에 있는지 판단
+			if ( m_server->m_userNames[ player ]->m_roomNumber == 0 )	message = message + "로비\r\n";
+			else message = message + to_string( m_server->m_userNames[ player ]->m_roomNumber ) + "번 채팅방 \r\n";
+
+			SendChat( message );
+		}
+		else
+		{
+			SendChat( "플레이어 정보 명령어 : i [닉네임] (해당 닉네임이 존재하지 않습니다)\r\n" );
+		}
+	}
+		break;
 	case 't':
 	case 'T':
 	{
@@ -188,7 +210,7 @@ bool Session::ProcessCommand()
 		break;
 	default:
 	{
-		SendChat( "----------------------------------------------------\r\n로비에 오신 것을 환영합니다\r\n----------------------------------------------------\r\n방 만들기(A) 플레이어 목록(L) 귓속말(T) 방 목록(o) 방 입장(J) 나가기(X)\r\n" );
+		SendChat( "----------------------------------------------------\r\n로비에 오신 것을 환영합니다\r\n----------------------------------------------------\r\n방 만들기(A) 플레이어 목록(L) 플레이어 정보(i) 귓속말(T) 방 목록(o) 방 입장(J) 나가기(X)\r\n" );
 	}
 	break;
 	}
