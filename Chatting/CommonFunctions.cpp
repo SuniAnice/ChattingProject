@@ -81,6 +81,17 @@ void ProcessCommand( Session& sock )
 		if ( sock.m_buffer[ 1 ] == '\r' && sock.m_buffer[ 2 ] == '\n' )	closesocket( sock.m_socket );
 	}
 		break;
+	case 'o':
+	case 'O':
+	{
+		string message = "방 목록을 출력합니다.\r\n";
+		for ( auto& room : sock.m_server->m_rooms )
+		{
+			message = message + to_string( room.first ) + "	(" + to_string( room.second.m_chatters.size() ) + " / " + to_string( room.second.m_maxPeople ) + ")	" + room.second.m_name + "\r\n";
+		}
+		sock.SendChat( message );
+	}
+		break;
 	case 'l':
 	case 'L':
 	{
@@ -94,7 +105,7 @@ void ProcessCommand( Session& sock )
 		break;
 	default:
 	{
-		sock.SendChat( "----------------------------------------------------\r\n로비에 오신 것을 환영합니다\r\n----------------------------------------------------\r\n방 만들기(A) 플레이어 목록(L) 방 입장(J) 나가기(X)\r\n" );
+		sock.SendChat( "----------------------------------------------------\r\n로비에 오신 것을 환영합니다\r\n----------------------------------------------------\r\n방 만들기(A) 플레이어 목록(L) 방 목록(o) 방 입장(J) 나가기(X)\r\n" );
 	}
 		break;
 	}
