@@ -23,11 +23,21 @@ void ProcessCommand( Session& sock )
 	{
 		stringstream stream;
 		string name;
-		int max;
+		int max = -1;
 		stream.str( sock.m_buffer );
 		stream >> name;
 		stream >> max;
+		if ( max <= 1 )
+		{
+			sock.SendChat( "방 만들기 명령어 : a [제한인원] [방제목] (최소 2명)\r\n" );
+			break;
+		}
 		stream >> name;
+		if ( name.size() <= 1 )
+		{
+			sock.SendChat( "방 만들기 명령어 : a [제한인원] [방제목] (최소 제목 글자수 2)\r\n" );
+			break;
+		}
 		sock.m_roomNumber = sock.m_server->MakeRoom( name, max );
 		sock.m_isInLobby = false;
 		sock.m_server->m_rooms[ sock.m_roomNumber ].m_chatters.push_back( &sock );
