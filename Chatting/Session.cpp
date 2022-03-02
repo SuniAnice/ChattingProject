@@ -187,6 +187,30 @@ bool Session::ProcessCommand()
 		}
 	}
 		break;
+	case 'p':
+	case 'P':
+	{
+		// 방 정보 보기
+		int roomNumber = 0;
+		stream >> roomNumber;
+		// 방이 존재할 경우
+		if ( roomNumber != 0 && m_server->m_rooms.count( roomNumber ) != 0 )
+		{
+			string message = "해당 방의 정보를 출력합니다.\r\n";
+			message = message + "이름 : " + m_server->m_rooms[ roomNumber ].m_name + "	정원 : " + to_string( m_server->m_rooms[ roomNumber ].m_maxPeople ) + "\r\n";
+			message = message + "참가자 : " + to_string( m_server->m_rooms[ roomNumber ].m_chatters.size() ) + "\r\n";
+			for ( auto& player : m_server->m_rooms[ roomNumber ].m_chatters )
+			{
+				message = message + player->m_name + "	" + player->m_ip + "\r\n";
+			}
+			SendChat( message );
+		}
+		else
+		{
+			SendChat( "방 정보 명령어 : p [방 번호] (해당 채팅방이 존재하지 않습니다)\r\n" );
+		}
+	}
+		break;
 	case 't':
 	case 'T':
 	{
@@ -210,7 +234,7 @@ bool Session::ProcessCommand()
 		break;
 	default:
 	{
-		SendChat( "----------------------------------------------------\r\n로비에 오신 것을 환영합니다\r\n----------------------------------------------------\r\n방 만들기(A) 플레이어 목록(L) 플레이어 정보(i) 귓속말(T) 방 목록(o) 방 입장(J) 나가기(X)\r\n" );
+		SendChat( "----------------------------------------------------\r\n로비에 오신 것을 환영합니다\r\n----------------------------------------------------\r\n방 만들기(a) 플레이어 목록(L) 플레이어 정보(i) 귓속말(t) 방 목록(o) 방 정보(p) 방 입장(j) 나가기(X)\r\n" );
 	}
 	break;
 	}
