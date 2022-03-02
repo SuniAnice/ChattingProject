@@ -21,6 +21,6 @@ bool LobbyScene::ExecutionInput()
 void LobbyScene::ChangeScene()
 {
 	// 씬을 채팅방으로 변경
-	parent->m_currentScene = new ChattingScene( parent );
+	parent->SetScene( new ChattingScene( parent ) );
 	delete this;
 }

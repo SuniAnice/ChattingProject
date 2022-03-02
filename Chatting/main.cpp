@@ -46,7 +46,7 @@ int main()
 
 		for ( auto &m_socket : server.m_userSockets )
 		{
-			FD_SET( m_socket->m_socket, &readSet );
+			FD_SET( m_socket->GetSocket(), &readSet );
 		}
 
 		if ( select( 0, &readSet, &writeSet, NULL, NULL ) == SOCKET_ERROR )
@@ -69,9 +69,8 @@ int main()
 				char buf[ 32 ];
 				auto ip = inet_ntop( AF_INET, &clientAddress.sin_addr, buf, sizeof(buf) );
 				cout << "클라이언트 접속 : " << ip << endl;
-				Session* info = new Session( clientSocket, ip );
-				info->m_currentScene = new LoginScene( info );
-				info->m_server = &server;
+				Session* info = new Session( clientSocket, ip, server );
+				info->SetScene( new LoginScene( info ) );
 				server.m_userSockets.push_back( info );
 			}
 		}
@@ -82,15 +81,15 @@ int main()
 			auto sock = ( *iter );
 
 			// recv
-			if ( FD_ISSET( sock->m_socket, &readSet ) )
+			if ( FD_ISSET( sock->GetSocket(), &readSet ) )
 			{
 				retVal = sock->Recv();
 				if ( retVal == SOCKET_ERROR )
 				{
 					// 컨테이너에서 유저 소켓 삭제
 					cout << "recv error" << endl;
-					cout << "클라이언트 접속종료 : " << sock->m_ip << endl;
-					server.m_userNames.erase( sock->m_name );
+					cout << "클라이언트 접속종료 : " << sock->GetIp() << endl;
+					server.m_userNames.erase( sock->GetName() );
 					delete ( *iter );
 					iter = server.m_userSockets.erase( iter );
 					continue;
@@ -98,26 +97,26 @@ int main()
 				else if ( retVal == 0 )
 				{
 					// 컨테이너에서 유저 소켓 삭제
-					cout << "클라이언트 접속종료 : " << sock->m_ip << endl;
-					server.m_userNames.erase( sock->m_name );
+					cout << "클라이언트 접속종료 : " << sock->GetIp() << endl;
+					server.m_userNames.erase( sock->GetName() );
 					delete ( *iter );
 					iter = server.m_userSockets.erase( iter );
 					continue;
 				}	
 				// 사용자의 입력을 처리할 필요가 있을 경우
-				if ( sock->m_isProcessing )
-					FD_SET( sock->m_socket, &writeSet );
+				if ( sock->IsProcessing() )
+					FD_SET( sock->GetSocket(), &writeSet );
 			}
 
 			// send
-			if ( FD_ISSET( sock->m_socket, &writeSet ) )
+			if ( FD_ISSET( sock->GetSocket(), &writeSet ) )
 			{
 				// 현재 Scene에 맞는 입력 처리 -> false인 경우에는 플레이어 접속 종료
-				if ( !sock->m_currentScene->ExecutionInput() )
+				if ( !sock->GetCurrentScene()->ExecutionInput() )
 				{
 					// 컨테이너에서 유저 소켓 삭제
-					cout << "클라이언트 접속종료 : " << sock->m_ip << endl;
-					server.m_userNames.erase( sock->m_name );
+					cout << "클라이언트 접속종료 : " << sock->GetIp() << endl;
+					server.m_userNames.erase( sock->GetName() );
 					delete ( *iter );
 					iter = server.m_userSockets.erase( iter );
 					continue;

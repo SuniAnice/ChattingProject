@@ -6,7 +6,7 @@
 #include <sstream>
 
 
-Session::Session( SOCKET sock, PCSTR ip ) : m_recvBytes( 0 ), m_socket( sock ), m_ip( ip )
+Session::Session( SOCKET& sock, PCSTR& ip, ChattingServer& server ) : m_socket( sock ), m_ip( ip ), m_recvBytes( 0 ), m_isProcessing( false ), m_isNameSet( false ), m_server( &server ), m_roomNumber( 0 )
 {
 	ZeroMemory( m_buffer, BUFFER_SIZE + 1 );
 }
@@ -15,6 +15,74 @@ Session::~Session()
 {
 	m_currentScene->ExitScene();
 	delete m_currentScene;
+}
+
+SOCKET& Session::GetSocket()
+{
+	return m_socket;
+}
+
+PCSTR& Session::GetIp()
+{
+	return m_ip;
+}
+
+char* Session::GetBuffer()
+{
+	return m_buffer;
+}
+
+bool Session::IsProcessing()
+{
+	return m_isProcessing;
+}
+
+int Session::GetRoomNumber()
+{
+	return 0;
+}
+
+ChattingServer* Session::GetServer()
+{
+	return m_server;
+}
+
+Scene* Session::GetCurrentScene()
+{
+	return m_currentScene;
+}
+
+bool Session::InInLobby()
+{
+	return m_isInLobby;
+}
+
+
+string& Session::GetName()
+{
+	return m_name;
+}
+
+void Session::SetRoomNumber( int number )
+{
+	m_roomNumber = number;
+}
+
+void Session::SetScene( Scene* scene )
+{
+	m_currentScene = scene;
+}
+
+void Session::SetIsInLobby( bool isInLobby )
+{
+	m_isInLobby = isInLobby;
+}
+
+void Session::InitializeBuffer()
+{
+	m_recvBytes = 0;
+	m_isProcessing = false;
+	ZeroMemory( m_buffer, BUFFER_SIZE + 1 );
 }
 
 int Session::Recv()
@@ -76,13 +144,6 @@ void Session::BroadcastMessage()
 		user->SendChat( chatting );
 	}
 	InitializeBuffer();
-}
-
-void Session::InitializeBuffer()
-{
-	m_recvBytes = 0;
-	m_isProcessing = false;
-	ZeroMemory( m_buffer, BUFFER_SIZE + 1 );
 }
 
 bool Session::ProcessCommand()
