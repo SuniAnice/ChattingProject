@@ -1,5 +1,6 @@
 
 
+#include "ChattingServer.h"
 #include "LobbyScene.h"
 #include "LoginScene.h"
 #include "Session.h"
@@ -13,8 +14,11 @@ LoginScene::LoginScene( Session* p )
 
 bool LoginScene::ExecutionInput()
 {
-	parent->SetName();
-	ChangeScene();
+	// 닉네임 설정에 성공했으면 씬 변경
+	if ( parent->SetName() )
+	{
+		ChangeScene();
+	}
 	return true;
 }
 

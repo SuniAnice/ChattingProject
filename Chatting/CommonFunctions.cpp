@@ -102,7 +102,7 @@ bool ProcessCommand( Session& session )
 	{
 		// 접속중인 플레이어
 		string message = "접속중인 플레이어들을 출력합니다.\r\n";
-		for ( auto& player : *session.m_allChatters )
+		for ( auto& player : session.m_server->m_userSockets )
 		{
 			message = message + player->m_name + "	" + player->m_ip + "\r\n";
 		}

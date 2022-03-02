@@ -36,13 +36,12 @@ public:
 	int m_roomNumber = 0;
 	ChattingServer* m_server;
 	Scene* m_currentScene;
-	vector< Session* >* m_allChatters;
 	bool m_isInLobby = true;
 	string m_name;
 
 	Session() = delete;
 
-	Session( SOCKET sock, PCSTR ip, vector< Session* > &container ) : m_socket( sock ), m_ip( ip ), m_recvBytes( 0 ), m_allChatters( &container )
+	Session( SOCKET sock, PCSTR ip, vector< Session* > &container ) : m_socket( sock ), m_ip( ip ), m_recvBytes( 0 )
 	{
 		ZeroMemory( m_buffer, BUFFER_SIZE + 1 );
 	}

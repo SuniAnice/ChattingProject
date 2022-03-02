@@ -20,6 +20,7 @@ void ChattingScene::ExitScene()
 	chatters->erase( remove(chatters->begin(), chatters->end(), parent), chatters->end() );
 	if ( chatters->size() == 0 )	parent->m_server->m_rooms.erase( parent->m_roomNumber );
 	parent->m_isInLobby = true;
+	parent->m_roomNumber = 0;
 	parent->m_currentScene = new LobbyScene( parent );
 	delete this;
 }

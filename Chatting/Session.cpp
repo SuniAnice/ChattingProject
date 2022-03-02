@@ -2,6 +2,7 @@
 
 #include "ChattingServer.h"
 #include "Session.h"
+#include <sstream>
 
 
 Session::~Session()
@@ -29,10 +30,23 @@ int Session::SendChat( const string& message ) const
 
 bool Session::SetName()
 {
-	m_name = m_buffer;
-	m_name = m_name.substr( 0, m_name.size() - 2 );
-	m_isNameSet = true;
-	SendChat( m_name + "을 닉네임으로 사용합니다\r\n" );
+	stringstream stream;
+	stream.str( m_buffer );
+	stream >> m_name;
+
+	if ( m_server->m_userNames.count( m_name ) == 0 )
+	{
+		m_isNameSet = true;
+		SendChat( m_name + "을 닉네임으로 사용합니다\r\n" );
+		m_server->m_userNames[ m_name ] = this;
+	}
+	else
+	{
+		SendChat( "중복된 닉네임이 존재합니다\r\n" );
+		InitializeBuffer();
+		return false;
+	}
+	
 
 	InitializeBuffer();
 

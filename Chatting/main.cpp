@@ -88,6 +88,7 @@ int main()
 					// 컨테이너에서 유저 소켓 삭제
 					cout << "recv error" << endl;
 					cout << "클라이언트 접속종료 : " << sock->m_ip << endl;
+					server.m_userNames.erase( sock->m_name );
 					delete ( *iter );
 					iter = server.m_userSockets.erase( iter );
 					continue;
@@ -96,6 +97,7 @@ int main()
 				{
 					// 컨테이너에서 유저 소켓 삭제
 					cout << "클라이언트 접속종료 : " << sock->m_ip << endl;
+					server.m_userNames.erase( sock->m_name );
 					delete ( *iter );
 					iter = server.m_userSockets.erase( iter );
 					continue;
@@ -112,6 +114,7 @@ int main()
 				{
 					// 컨테이너에서 유저 소켓 삭제
 					cout << "클라이언트 접속종료 : " << sock->m_ip << endl;
+					server.m_userNames.erase( sock->m_name );
 					delete ( *iter );
 					iter = server.m_userSockets.erase( iter );
 					continue;
