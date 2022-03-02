@@ -8,6 +8,4 @@
 #include <string>
 
 
-void BroadcastMessage( const vector< Session* >& container, const string& message );
-
-bool ProcessCommand( Session& sock );
+void SystemMessage( const vector< Session* >& container, const string& message );

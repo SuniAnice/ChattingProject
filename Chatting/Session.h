@@ -57,5 +57,7 @@ public:
 	bool SetName();
 
 	void BroadcastMessage();
+
+	bool ProcessCommand();
 	
 };
