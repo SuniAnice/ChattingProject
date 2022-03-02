@@ -68,9 +68,7 @@ int main()
 				char buf[ 32 ];
 				auto ip = inet_ntop( AF_INET, &clientAddress.sin_addr, buf, sizeof(buf) );
 				cout << "클라이언트 접속 : " << ip << endl;
-				Session* info = new Session( clientSocket, ip );
-				info->SendChat( "안녕하세요. 채팅 서버에 오신 것을 환영합니다.\r\n" );
-				info->SendChat( "사용하실 닉네임을 입력해주세요.\r\n" );
+				Session* info = new Session( clientSocket, ip, g_userSockets );
 				info->m_currentScene = new LoginScene( info );
 				g_userSockets.push_back( info );
 			}
@@ -110,7 +108,7 @@ int main()
 			if ( FD_ISSET( sock->m_socket, &writeSet ) )
 			{
 				// 현재 Scene에 맞는 입력 처리
-				sock->m_currentScene->ExecutionInput( g_userSockets );
+				sock->m_currentScene->ExecutionInput();
 			}
 			iter++;
 		}

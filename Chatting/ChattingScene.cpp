@@ -4,7 +4,11 @@
 #include "Session.h"
 
 
-void ChattingScene::ExecutionInput( vector< Session* > container )
+void ChattingScene::ExecutionInput()
 {
-	parent->BroadcastMessage( container );
+	parent->BroadcastMessage();
+}
+
+void ChattingScene::ExitScene()
+{
 }

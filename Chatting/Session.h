@@ -34,17 +34,18 @@ public:
 	bool m_isProcessing;
 	// 플레이어 정보
 	Scene* m_currentScene;
+	vector< Session* > *m_container;
 	bool m_isInLobby = true;
 	string m_name;
 
 	Session() = delete;
 
-	Session( SOCKET sock, PCSTR ip ) : m_socket( sock ), m_ip( ip ), m_recvBytes( 0 )
+	Session( SOCKET sock, PCSTR ip, vector< Session* > &container ) : m_socket( sock ), m_ip( ip ), m_recvBytes( 0 ), m_container( &container )
 	{
 		ZeroMemory( m_buffer, BUFFER_SIZE + 1 );
 	}
 
-	~Session() {}
+	~Session() { delete m_currentScene; }
 
 	void InitializeBuffer();
 
@@ -54,6 +55,6 @@ public:
 
 	bool SetName();
 
-	void BroadcastMessage( const vector< Session* > &container);
+	void BroadcastMessage();
 	
 };

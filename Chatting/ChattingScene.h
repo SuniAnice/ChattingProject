@@ -12,6 +12,7 @@ public:
 	ChattingScene() = delete;
 	ChattingScene( Session* p ) { parent = p; }
 	virtual ~ChattingScene() {}
-	virtual void ExecutionInput( vector < Session* > container );
+	virtual void ExecutionInput();
 	virtual void ChangeScene() {}
+	virtual void ExitScene();
 };

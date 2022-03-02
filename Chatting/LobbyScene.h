@@ -12,7 +12,7 @@ public:
 	LobbyScene() = delete;
 	LobbyScene( Session* p );
 	virtual ~LobbyScene() {}
-	virtual void ExecutionInput( vector < Session* > container );
+	virtual void ExecutionInput();
 	virtual void ChangeScene();
+	virtual void ExitScene() {}
 };
-

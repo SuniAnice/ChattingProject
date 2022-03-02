@@ -32,10 +32,10 @@ bool Session::SetName()
 	return true;
 }
 
-void Session::BroadcastMessage( const vector<Session*> &container)
+void Session::BroadcastMessage()
 {
 	string chatting = m_name + " : " + m_buffer;
-	for ( auto& user : container )
+	for ( auto& user : *m_container )
 	{
 		if ( !user->m_isInLobby )	user->SendChat( chatting );
 	}
