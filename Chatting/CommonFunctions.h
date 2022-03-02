@@ -10,4 +10,4 @@
 
 void BroadcastMessage( const vector< Session* >& container, const string& message );
 
-void ProcessCommand( Session& sock );
+bool ProcessCommand( Session& sock );

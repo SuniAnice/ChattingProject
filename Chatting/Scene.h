@@ -18,7 +18,7 @@ public:
 	Scene() {}
 	Scene( Session* p ) : parent( p ) {}
 	virtual ~Scene() {}
-	virtual void ExecutionInput() = 0;
+	virtual bool ExecutionInput() = 0;
 	virtual void ChangeScene() = 0;
 	virtual void ExitScene() = 0;
 };

@@ -108,7 +108,14 @@ int main()
 			if ( FD_ISSET( sock->m_socket, &writeSet ) )
 			{
 				// 현재 Scene에 맞는 입력 처리
-				sock->m_currentScene->ExecutionInput();
+				if ( !sock->m_currentScene->ExecutionInput() )
+				{
+					// 컨테이너에서 유저 소켓 삭제
+					cout << "클라이언트 접속종료 : " << sock->m_ip << endl;
+					delete ( *iter );
+					iter = server.m_userSockets.erase( iter );
+					continue;
+				}
 			}
 			iter++;
 		}

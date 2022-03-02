@@ -11,10 +11,11 @@ LoginScene::LoginScene( Session* p )
 	parent = p;
 }
 
-void LoginScene::ExecutionInput()
+bool LoginScene::ExecutionInput()
 {
 	parent->SetName();
 	ChangeScene();
+	return true;
 }
 
 void LoginScene::ChangeScene()

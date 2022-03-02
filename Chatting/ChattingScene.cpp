@@ -7,9 +7,10 @@
 #include "Session.h"
 
 
-void ChattingScene::ExecutionInput()
+bool ChattingScene::ExecutionInput()
 {
 	parent->BroadcastMessage();
+	return true;
 }
 
 void ChattingScene::ExitScene()

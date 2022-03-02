@@ -12,9 +12,9 @@ LobbyScene::LobbyScene( Session* p )
 	ProcessCommand( *parent );
 }
 
-void LobbyScene::ExecutionInput()
+bool LobbyScene::ExecutionInput()
 {
-	ProcessCommand( *parent );
+	return ProcessCommand( *parent );
 }
 
 void LobbyScene::ChangeScene()

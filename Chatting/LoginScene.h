@@ -12,7 +12,7 @@ public:
 	LoginScene() = delete;
 	LoginScene( Session* p );
 	virtual ~LoginScene() {}
-	virtual void ExecutionInput();
+	virtual bool ExecutionInput();
 	virtual void ChangeScene();
 	virtual void ExitScene() {}
 };

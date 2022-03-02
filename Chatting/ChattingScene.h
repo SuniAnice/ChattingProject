@@ -12,7 +12,7 @@ public:
 	ChattingScene() = delete;
 	ChattingScene( Session* p ) { parent = p; }
 	virtual ~ChattingScene() {}
-	virtual void ExecutionInput();
+	virtual bool ExecutionInput();
 	virtual void ChangeScene() {}
 	virtual void ExitScene();
 };
