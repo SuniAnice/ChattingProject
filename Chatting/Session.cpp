@@ -78,13 +78,6 @@ void Session::SetIsInLobby( bool isInLobby )
 	m_isInLobby = isInLobby;
 }
 
-void Session::InitializeBuffer()
-{
-	m_recvBytes = 0;
-	m_isProcessing = false;
-	ZeroMemory( m_buffer, BUFFER_SIZE + 1 );
-}
-
 int Session::Recv()
 {
 	int retVal = recv( m_socket, m_buffer + m_recvBytes, BUFFER_SIZE - m_recvBytes, 0 );
@@ -376,4 +369,11 @@ bool Session::ProcessCommand()
 	}
 	InitializeBuffer();
 	return true;
+}
+
+void Session::InitializeBuffer()
+{
+	m_recvBytes = 0;
+	m_isProcessing = false;
+	ZeroMemory( m_buffer, BUFFER_SIZE + 1 );
 }

@@ -10,8 +10,9 @@ class Session;
 
 class Scene
 {
-public:
+protected:
 	Session* parent;
+public:
 	Scene() {}
 	Scene( Session* p );
 	virtual ~Scene() {}

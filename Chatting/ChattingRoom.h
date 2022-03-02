@@ -16,7 +16,7 @@ class ChattingRoom
 {
 public:
 	string m_name;
-	int m_maxPeople = 0;
+	int m_maxPeople;
 	vector< Session* > m_chatters;
 };
 

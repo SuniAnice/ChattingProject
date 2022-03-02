@@ -36,7 +36,6 @@ private:
 	bool m_isInLobby;
 	string m_name;
 public:
-
 	Session() = delete;
 
 	Session( SOCKET& sock, PCSTR& ip, ChattingServer& server );
@@ -70,8 +69,6 @@ public:
 	void SetIsInLobby( bool isInLobby );
 
 	bool SetName();
-	// 버퍼에 입력된 값을 초기화하는 함수
-	void InitializeBuffer();
 
 	// 데이터 수신 함수
 	int Recv();
@@ -84,4 +81,8 @@ public:
 
 	// 플레이어로부터 받은 입력을 바탕으로, 명령어를 실행하는 함수
 	bool ProcessCommand();
+
+private:
+	// 버퍼에 입력된 값을 초기화하는 함수
+	void InitializeBuffer();
 };
