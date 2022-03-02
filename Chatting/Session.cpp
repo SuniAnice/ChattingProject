@@ -82,6 +82,7 @@ int Session::Recv()
 {
 	int retVal = recv( m_socket, m_buffer + m_recvBytes, BUFFER_SIZE - m_recvBytes, 0 );
 	m_recvBytes += retVal;
+	if ( retVal <= 0 ) return retVal;
 	// 엔터키가 입력되었을 경우
 	if ( m_buffer[ m_recvBytes - 1 ] == '\n' )
 	{
