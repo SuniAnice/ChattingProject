@@ -2,7 +2,6 @@
 
 #include "ChattingRoom.h"
 #include "ChattingServer.h"
-#include "CommonFunctions.h"
 #include "LoginScene.h"
 #include "Session.h"
 #include <iostream>
@@ -67,7 +66,7 @@ int main()
 				char buf[ 32 ];
 				auto ip = inet_ntop( AF_INET, &clientAddress.sin_addr, buf, sizeof(buf) );
 				cout << "클라이언트 접속 : " << ip << endl;
-				Session* info = new Session( clientSocket, ip, server.m_userSockets );
+				Session* info = new Session( clientSocket, ip );
 				info->m_currentScene = new LoginScene( info );
 				info->m_server = &server;
 				server.m_userSockets.push_back( info );

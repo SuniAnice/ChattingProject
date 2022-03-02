@@ -10,7 +10,7 @@ class ChattingScene :public Scene
 {
 public:
 	ChattingScene() = delete;
-	ChattingScene( Session* p ) { parent = p; }
+	ChattingScene( Session* p );
 	virtual ~ChattingScene() {}
 	virtual bool ExecutionInput();
 	virtual void ChangeScene() {}

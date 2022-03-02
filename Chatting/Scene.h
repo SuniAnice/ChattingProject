@@ -16,7 +16,7 @@ class Scene
 public:
 	Session* parent;
 	Scene() {}
-	Scene( Session* p ) : parent( p ) {}
+	Scene( Session* p );
 	virtual ~Scene() {}
 	virtual bool ExecutionInput() = 0;
 	virtual void ChangeScene() = 0;

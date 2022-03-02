@@ -9,8 +9,8 @@
 #include <vector>
 
 
-#define BUFFER_SIZE 1024
-#define SERVER_PORT 4000
+constexpr int BUFFER_SIZE = 1024;
+constexpr int  SERVER_PORT = 4000;
 
 
 using namespace std;
@@ -41,10 +41,7 @@ public:
 
 	Session() = delete;
 
-	Session( SOCKET sock, PCSTR ip, vector< Session* > &container ) : m_socket( sock ), m_ip( ip ), m_recvBytes( 0 )
-	{
-		ZeroMemory( m_buffer, BUFFER_SIZE + 1 );
-	}
+	Session( SOCKET sock, PCSTR ip );
 
 	~Session();
 

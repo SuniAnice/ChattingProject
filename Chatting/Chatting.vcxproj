@@ -112,7 +112,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -142,7 +142,6 @@
     <ClCompile Include="ChattingRoom.cpp" />
     <ClCompile Include="ChattingScene.cpp" />
     <ClCompile Include="ChattingServer.cpp" />
-    <ClCompile Include="CommonFunctions.cpp" />
     <ClCompile Include="LobbyScene.cpp" />
     <ClCompile Include="LoginScene.cpp" />
     <ClCompile Include="main.cpp" />
@@ -153,7 +152,6 @@
     <ClInclude Include="ChattingRoom.h" />
     <ClInclude Include="ChattingScene.h" />
     <ClInclude Include="ChattingServer.h" />
-    <ClInclude Include="CommonFunctions.h" />
     <ClInclude Include="LobbyScene.h" />
     <ClInclude Include="LoginScene.h" />
     <ClInclude Include="Scene.h" />

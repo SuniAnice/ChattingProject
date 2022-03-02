@@ -1,10 +1,14 @@
 
 
 #include "ChattingServer.h"
-#include "CommonFunctions.h"
 #include "Session.h"
 #include <sstream>
 
+
+Session::Session( SOCKET sock, PCSTR ip ) : m_recvBytes( 0 ), m_socket( sock ), m_ip( ip )
+{
+	ZeroMemory( m_buffer, BUFFER_SIZE + 1 );
+}
 
 Session::~Session()
 {
@@ -117,7 +121,7 @@ bool Session::ProcessCommand()
 		m_roomNumber = m_server->MakeRoom( name, max );
 		m_isInLobby = false;
 		m_server->m_rooms[ m_roomNumber ].m_chatters.push_back( this );
-		SystemMessage( m_server->m_rooms[ m_roomNumber ].m_chatters, m_name + "님이 대화방에 입장했습니다.\r\n" );
+		m_server->SystemMessage( m_server->m_rooms[ m_roomNumber ].m_chatters, m_name + "님이 대화방에 입장했습니다.\r\n" );
 		m_currentScene->ChangeScene();
 	}
 	break;
@@ -141,7 +145,7 @@ bool Session::ProcessCommand()
 				m_roomNumber = roomNum;
 				m_isInLobby = false;
 				m_server->m_rooms[ roomNum ].m_chatters.push_back( this );
-				SystemMessage( m_server->m_rooms[ m_roomNumber ].m_chatters, m_name + "님이 대화방에 입장했습니다.\r\n" );
+				m_server->SystemMessage( m_server->m_rooms[ m_roomNumber ].m_chatters, m_name + "님이 대화방에 입장했습니다.\r\n" );
 				m_currentScene->ChangeScene();
 			}
 			else

@@ -14,3 +14,11 @@ int ChattingServer::MakeRoom( string name, int max )
 		}
 	}
 }
+
+void ChattingServer::SystemMessage( vector< Session* > container, const string& message )
+{
+	for ( auto& user : container )
+	{
+		user->SendChat( message );
+	}
+}

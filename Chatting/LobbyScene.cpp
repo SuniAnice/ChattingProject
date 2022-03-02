@@ -1,7 +1,6 @@
 
 
 #include "ChattingScene.h"
-#include "CommonFunctions.h"
 #include "LobbyScene.h"
 #include "Session.h"
 
