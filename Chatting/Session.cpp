@@ -20,6 +20,13 @@ int Session::Recv()
 	{
 		m_isProcessing = true;
 	}
+	if ( m_buffer[ m_recvBytes - 1 ] == '\b' && m_recvBytes > 1 )
+	{
+		m_buffer[ m_recvBytes - 1 ] = '\0';
+		m_buffer[ m_recvBytes - 2 ] = '\0';
+		m_recvBytes -= 2;
+		return retVal;
+	}
 	return retVal;
 }
 
@@ -158,13 +165,17 @@ bool Session::ProcessCommand()
 			{
 				m_currentScene->ExitScene();
 				closesocket( m_socket );
+				return false;
 			}
 		}
 		else
 		{
-			if ( *( ptr + 1 ) == '\r' && *( ptr + 2 ) == '\n' )	closesocket( m_socket );
+			if ( *( ptr + 1 ) == '\r' && *( ptr + 2 ) == '\n' )
+			{
+				closesocket( m_socket );
+				return false;
+			}
 		}
-		return false;
 	}
 	break;
 	case 'o':
@@ -271,10 +282,26 @@ bool Session::ProcessCommand()
 		m_currentScene->ExitScene();
 	}
 		break;
+	case 'h':
+	case 'H':
+	{
+		string message = "----------------------------------------------------\r\n명령어 목록을 출력합니다.\r\n----------------------------------------------------\r\n";
+		if ( isInRoom )
+		{
+			message = message + "플레이어 목록 :		L\r\n플레이어 정보 :		i [닉네임]\r\n귓속말 :		t [닉네임] [할 말]\r\n방 목록 :		o\r\n방 정보 :		p [방 번호]\r\n방 나가기 :		q\r\n종료 :			x\r\n";
+			SendChat( message );
+		}
+		else
+		{
+			message = message + "방 만들기 :		a [인원수] [방제목]\r\n플레이어 목록 :		L\r\n플레이어 정보 :		i [닉네임]\r\n귓속말 :		t [닉네임] [할 말]\r\n방 목록 :		o\r\n방 정보 :		p [방 번호]\r\n방 입장 :		j\r\n종료 :			x\r\n";
+			SendChat( message );
+		}
+	}
+		break;
 	default:
 	{
-		if ( isInRoom )	SendChat( "플레이어 목록(L) 플레이어 정보(i) 귓속말(t) 방 목록(o) 방 정보(p) 방 퇴장(q) 나가기(X)\r\n" );
-		else			SendChat( "----------------------------------------------------\r\n로비에 오신 것을 환영합니다\r\n----------------------------------------------------\r\n방 만들기(a) 플레이어 목록(L) 플레이어 정보(i) 귓속말(t) 방 목록(o) 방 정보(p) 방 입장(j) 나가기(X)\r\n" );
+		if ( isInRoom )	SendChat( "명령어 보기(h) 나가기(X)\r\n" );
+		else			SendChat( "----------------------------------------------------\r\n로비에 오신 것을 환영합니다\r\n----------------------------------------------------\r\n명령어 보기(h) 나가기(X)\r\n" );
 	}
 	break;
 	}
