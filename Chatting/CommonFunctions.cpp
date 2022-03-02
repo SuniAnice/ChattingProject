@@ -16,16 +16,17 @@ void BroadcastMessage( const vector<Session*>& container, const string& message 
 
 void ProcessCommand( Session& sock )
 {
-	switch ( sock.m_buffer[ 0 ] )
+	stringstream stream;
+	string op;
+	stream.str( sock.m_buffer );
+	stream >> op;
+	switch ( sock.m_buffer[0] )
 	{
 	case 'a':
 	case 'A':
 	{
-		stringstream stream;
 		string name;
 		int max = -1;
-		stream.str( sock.m_buffer );
-		stream >> name;
 		stream >> max;
 		if ( max <= 1 )
 		{
@@ -38,11 +39,40 @@ void ProcessCommand( Session& sock )
 			sock.SendChat( "방 만들기 명령어 : a [제한인원] [방제목] (최소 제목 글자수 2)\r\n" );
 			break;
 		}
+		// 서버에 방 생성을 요청
 		sock.m_roomNumber = sock.m_server->MakeRoom( name, max );
 		sock.m_isInLobby = false;
 		sock.m_server->m_rooms[ sock.m_roomNumber ].m_chatters.push_back( &sock );
 		BroadcastMessage( sock.m_server->m_rooms[ sock.m_roomNumber ].m_chatters , sock.m_name + "님이 대화방에 입장했습니다.\r\n" );
 		sock.m_currentScene->ChangeScene();
+	}
+		break;
+	case 'j':
+	case 'J':
+	{
+		int roomNum = -1;
+		stream >> roomNum;
+		// 방이 존재하는지 체크
+		if ( roomNum >= 1 && sock.m_server->m_rooms.count( roomNum ) )
+		{
+			// 방 인원수가 가득 찼는지 체크
+			if ( sock.m_server->m_rooms[ roomNum ].m_maxPeople > sock.m_server->m_rooms[ roomNum ].m_chatters.size() )
+			{
+				sock.m_roomNumber = roomNum;
+				sock.m_isInLobby = false;
+				sock.m_server->m_rooms[ roomNum ].m_chatters.push_back( &sock );
+				BroadcastMessage( sock.m_server->m_rooms[ sock.m_roomNumber ].m_chatters, sock.m_name + "님이 대화방에 입장했습니다.\r\n" );
+				sock.m_currentScene->ChangeScene();
+			}
+			else
+			{
+				sock.SendChat( "방이 가득 찼습니다.\r\n" );
+			}
+		}
+		else
+		{
+			sock.SendChat( "방 입장 명령어 : j [방 번호] (방 입장에 실패했습니다.)\r\n" );
+		}
 	}
 		break;
 	case 'X':
@@ -64,7 +94,7 @@ void ProcessCommand( Session& sock )
 		break;
 	default:
 	{
-		sock.SendChat( "----------------------------------------------------\r\n로비에 오신 것을 환영합니다\r\n----------------------------------------------------\r\n방 만들기(A) 플레이어 목록(L) 나가기(X)\r\n" );
+		sock.SendChat( "----------------------------------------------------\r\n로비에 오신 것을 환영합니다\r\n----------------------------------------------------\r\n방 만들기(A) 플레이어 목록(L) 방 입장(J) 나가기(X)\r\n" );
 	}
 		break;
 	}
