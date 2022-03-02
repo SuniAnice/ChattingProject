@@ -139,7 +139,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ChattingRoom.cpp" />
     <ClCompile Include="ChattingScene.cpp" />
+    <ClCompile Include="ChattingServer.cpp" />
     <ClCompile Include="CommonFunctions.cpp" />
     <ClCompile Include="LobbyScene.cpp" />
     <ClCompile Include="LoginScene.cpp" />
@@ -148,7 +150,9 @@
     <ClCompile Include="Session.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ChattingRoom.h" />
     <ClInclude Include="ChattingScene.h" />
+    <ClInclude Include="ChattingServer.h" />
     <ClInclude Include="CommonFunctions.h" />
     <ClInclude Include="LobbyScene.h" />
     <ClInclude Include="LoginScene.h" />

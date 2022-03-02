@@ -1,13 +1,11 @@
 
 
+#include "ChattingRoom.h"
+#include "ChattingServer.h"
 #include "CommonFunctions.h"
 #include "LoginScene.h"
 #include "Session.h"
 #include <iostream>
-#include <vector>
-
-
-vector< Session* > g_userSockets;
 
 
 using namespace std;
@@ -37,13 +35,14 @@ int main()
 	FD_SET readSet, writeSet;
 	SOCKADDR_IN clientAddress;
 	int retVal;
+	ChattingServer server;
 
 	while ( true ) {
 		FD_ZERO( &readSet );
 		FD_ZERO( &writeSet );
 		FD_SET( listenSocket, &readSet );
 
-		for ( auto &m_socket : g_userSockets )
+		for ( auto &m_socket : server.m_userSockets )
 		{
 			FD_SET( m_socket->m_socket, &readSet );
 		}
@@ -68,14 +67,15 @@ int main()
 				char buf[ 32 ];
 				auto ip = inet_ntop( AF_INET, &clientAddress.sin_addr, buf, sizeof(buf) );
 				cout << "클라이언트 접속 : " << ip << endl;
-				Session* info = new Session( clientSocket, ip, g_userSockets );
+				Session* info = new Session( clientSocket, ip, server.m_userSockets );
 				info->m_currentScene = new LoginScene( info );
-				g_userSockets.push_back( info );
+				info->m_server = &server;
+				server.m_userSockets.push_back( info );
 			}
 		}
 
 		// 데이터 통신
-		for ( auto iter = g_userSockets.begin(); iter != g_userSockets.end(); )
+		for ( auto iter = server.m_userSockets.begin(); iter != server.m_userSockets.end(); )
 		{
 			auto sock = ( *iter );
 
@@ -89,7 +89,7 @@ int main()
 					cout << "recv error" << endl;
 					cout << "클라이언트 접속종료 : " << sock->m_ip << endl;
 					delete ( *iter );
-					iter = g_userSockets.erase( iter );
+					iter = server.m_userSockets.erase( iter );
 					continue;
 				}
 				else if ( retVal == 0 )
@@ -97,7 +97,7 @@ int main()
 					// 컨테이너에서 유저 소켓 삭제
 					cout << "클라이언트 접속종료 : " << sock->m_ip << endl;
 					delete ( *iter );
-					iter = g_userSockets.erase( iter );
+					iter = server.m_userSockets.erase( iter );
 					continue;
 				}			
 				if ( sock->m_isProcessing )

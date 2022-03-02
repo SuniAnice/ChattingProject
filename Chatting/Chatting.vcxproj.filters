@@ -36,6 +36,12 @@
     <ClCompile Include="ChattingScene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="ChattingRoom.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ChattingServer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Session.h">
@@ -54,6 +60,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ChattingScene.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ChattingRoom.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ChattingServer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

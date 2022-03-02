@@ -1,7 +1,9 @@
 
 
 #include "ChattingScene.h"
+#include "ChattingServer.h"
 #include "CommonFunctions.h"
+#include <sstream>
 
 
 void BroadcastMessage( const vector<Session*>& container, const string& message )
@@ -12,15 +14,24 @@ void BroadcastMessage( const vector<Session*>& container, const string& message 
 	}
 }
 
-void ProcessCommand( const vector<Session*>& container, Session& sock )
+void ProcessCommand( Session& sock )
 {
 	switch ( sock.m_buffer[ 0 ] )
 	{
 	case 'a':
 	case 'A':
 	{
+		stringstream stream;
+		string name;
+		int max;
+		stream.str( sock.m_buffer );
+		stream >> name;
+		stream >> max;
+		stream >> name;
+		sock.m_roomNumber = sock.m_server->MakeRoom( name, max );
 		sock.m_isInLobby = false;
-		BroadcastMessage( container, sock.m_name + "님이 대화방에 입장했습니다.\r\n" );
+		sock.m_server->m_rooms[ sock.m_roomNumber ].m_chatters.push_back( &sock );
+		BroadcastMessage( sock.m_server->m_rooms[ sock.m_roomNumber ].m_chatters , sock.m_name + "님이 대화방에 입장했습니다.\r\n" );
 		sock.m_currentScene->ChangeScene();
 	}
 		break;
@@ -34,7 +45,7 @@ void ProcessCommand( const vector<Session*>& container, Session& sock )
 	case 'L':
 	{
 		string message = "접속중인 플레이어들을 출력합니다.\r\n";
-		for ( auto& player : container )
+		for ( auto& player : *sock.m_allChatters )
 		{
 			message = message + player->m_name + "	" + player->m_ip + "\r\n";
 		}
@@ -43,7 +54,7 @@ void ProcessCommand( const vector<Session*>& container, Session& sock )
 		break;
 	default:
 	{
-		sock.SendChat( "----------------------------------------------------\r\n로비에 오신 것을 환영합니다\r\n----------------------------------------------------\r\n방 입장(A) 플레이어 목록(L) 나가기(X)\r\n" );
+		sock.SendChat( "----------------------------------------------------\r\n로비에 오신 것을 환영합니다\r\n----------------------------------------------------\r\n방 만들기(A) 플레이어 목록(L) 나가기(X)\r\n" );
 	}
 		break;
 	}

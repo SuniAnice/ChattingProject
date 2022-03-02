@@ -9,12 +9,12 @@
 LobbyScene::LobbyScene( Session* p )
 {
 	parent = p;
-	p->SendChat( "----------------------------------------------------\r\n로비에 오신 것을 환영합니다\r\n----------------------------------------------------\r\n방 입장(A) 플레이어 목록(L) 나가기(X)\r\n" );
+	ProcessCommand( *parent );
 }
 
 void LobbyScene::ExecutionInput()
 {
-	ProcessCommand( *parent->m_container, *parent );
+	ProcessCommand( *parent );
 }
 
 void LobbyScene::ChangeScene()

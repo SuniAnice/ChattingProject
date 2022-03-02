@@ -1,5 +1,6 @@
 
 
+#include "ChattingServer.h"
 #include "Session.h"
 
 
@@ -41,9 +42,9 @@ bool Session::SetName()
 void Session::BroadcastMessage()
 {
 	string chatting = m_name + " : " + m_buffer;
-	for ( auto& user : *m_container )
+	for ( auto& user : m_server->m_rooms[ m_roomNumber ].m_chatters )
 	{
-		if ( !user->m_isInLobby )	user->SendChat( chatting );
+		user->SendChat( chatting );
 	}
 	InitializeBuffer();
 }
