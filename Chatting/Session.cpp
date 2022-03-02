@@ -1,6 +1,7 @@
 
 
 #include "ChattingServer.h"
+#include "Scene.h"
 #include "Session.h"
 #include <sstream>
 

@@ -4,10 +4,10 @@
 
 
 #include "ChattingRoom.h"
-#include "Session.h"
 #include <unordered_map>
 #include <vector>
 
+class Session;
 
 class ChattingServer
 {

@@ -3,7 +3,6 @@
 #pragma once
 
 
-#include "Scene.h"
 #include <WS2tcpip.h>
 #include <string>
 #include <vector>
@@ -16,7 +15,7 @@ constexpr int  SERVER_PORT = 4000;
 using namespace std;
 
 
-#pragma comment( lib, "Ws2_32.lib" )
+class Scene;
 
 class ChattingServer;
 

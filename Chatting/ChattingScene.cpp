@@ -2,7 +2,9 @@
 
 #include "ChattingServer.h"
 #include "ChattingScene.h"
+#include "ChattingRoom.h"
 #include "LobbyScene.h"
+#include "Scene.h"
 #include "Session.h"
 
 

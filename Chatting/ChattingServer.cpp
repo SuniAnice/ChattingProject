@@ -1,6 +1,8 @@
 
 
+#include "ChattingRoom.h"
 #include "ChattingServer.h"
+#include "Session.h"
 
 int ChattingServer::MakeRoom( string name, int max )
 {
