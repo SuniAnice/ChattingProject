@@ -45,7 +45,7 @@ public:
 		ZeroMemory( m_buffer, BUFFER_SIZE + 1 );
 	}
 
-	~Session() { delete m_currentScene; }
+	~Session();
 
 	void InitializeBuffer();
 

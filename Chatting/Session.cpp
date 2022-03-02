@@ -3,6 +3,12 @@
 #include "Session.h"
 
 
+Session::~Session()
+{
+	m_currentScene->ExitScene();
+	delete m_currentScene;
+}
+
 int Session::Recv()
 {
 	int retVal = recv( m_socket, m_buffer + m_recvBytes, BUFFER_SIZE - m_recvBytes, 0 );
