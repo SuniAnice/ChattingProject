@@ -6,7 +6,7 @@
 #include "Scene.h"
 
 
-class ChattingScene :public Scene
+class ChattingScene : public Scene
 {
 public:
 	ChattingScene() = delete;

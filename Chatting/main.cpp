@@ -5,6 +5,7 @@
 #include "LoginScene.h"
 #include "Session.h"
 #include <iostream>
+#include <memory>
 
 
 #pragma comment( lib, "Ws2_32.lib" )
@@ -70,7 +71,7 @@ int main()
 				auto ip = inet_ntop( AF_INET, &clientAddress.sin_addr, buf, sizeof(buf) );
 				cout << "클라이언트 접속 : " << ip << endl;
 				Session* info = new Session( clientSocket, ip, server );
-				info->SetScene( new LoginScene( info ) );
+				info->SetScene( make_shared< LoginScene >( info ) );
 				server.m_userSockets.push_back( info );
 			}
 		}

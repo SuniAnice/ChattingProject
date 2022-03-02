@@ -14,9 +14,16 @@ class Session;
 
 class ChattingRoom
 {
-public:
+private:
 	string m_name;
 	int m_maxPeople;
 	vector< Session* > m_chatters;
+public:
+	string& GetName();
+	int GetMaxPeople() const;
+	vector< Session* >& GetChatters();
+
+	void SetName( const string& name );
+	void SetMaxPeople( int max );
 };
 

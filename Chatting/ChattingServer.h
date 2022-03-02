@@ -20,5 +20,5 @@ public:
 	int MakeRoom( const string& name, int max );
 
 	// 주체가 없으며, 컨테이너의 모든 플레이어에게 메시지를 보낼 때 쓰는 함수
-	void SystemMessage( vector< Session* > &container, const string& message );
+	void SystemMessage( const vector< Session* > &container, const string& message );
 };

@@ -6,6 +6,7 @@
 #include <WS2tcpip.h>
 #include <string>
 #include <vector>
+#include <memory>
 
 
 constexpr int BUFFER_SIZE = 1024;
@@ -32,7 +33,7 @@ private:
 	bool m_isNameSet;
 	int m_roomNumber;
 	ChattingServer* m_server;
-	Scene* m_currentScene;
+	shared_ptr<Scene> m_currentScene;
 	bool m_isInLobby;
 	string m_name;
 public:
@@ -49,22 +50,22 @@ public:
 
 	char* GetBuffer();
 
-	bool IsProcessing();
+	bool IsProcessing() const;
 
-	int GetRoomNumber();
+	int GetRoomNumber() const;
 
 	ChattingServer* GetServer();
 
-	Scene* GetCurrentScene();
+	shared_ptr< Scene > GetCurrentScene();
 
-	bool InInLobby();
+	bool InInLobby() const;
 
 	string& GetName();
 
 	//Setter ÇÔ¼öµé
 	void SetRoomNumber( int number );
 
-	void SetScene( Scene* scene );
+	void SetScene( shared_ptr< Scene > scene );
 
 	void SetIsInLobby( bool isInLobby );
 

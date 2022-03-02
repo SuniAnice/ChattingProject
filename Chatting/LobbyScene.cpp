@@ -5,7 +5,7 @@
 #include "Session.h"
 
 
-LobbyScene::LobbyScene( Session* p )
+LobbyScene::LobbyScene( Session* p ) : Scene( p )
 {
 	parent = p;
 	// 로비 메시지 출력용
@@ -21,6 +21,5 @@ bool LobbyScene::ExecutionInput()
 void LobbyScene::ChangeScene()
 {
 	// 씬을 채팅방으로 변경
-	parent->SetScene( new ChattingScene( parent ) );
-	delete this;
+	parent->SetScene( make_shared< ChattingScene >( parent ) );
 }

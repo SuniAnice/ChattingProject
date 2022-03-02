@@ -13,7 +13,7 @@ class Scene
 protected:
 	Session* parent;
 public:
-	Scene() {}
+	Scene() = delete;
 	Scene( Session* p );
 	virtual ~Scene() {}
 	// 사용자의 입력을 처리하는 함수

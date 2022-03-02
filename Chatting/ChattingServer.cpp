@@ -10,14 +10,14 @@ int ChattingServer::MakeRoom( const string& name, int max )
 	{
 		if ( !m_rooms.count( i ) )
 		{
-			m_rooms[ i ].m_name = name;
-			m_rooms[ i ].m_maxPeople = max;
+			m_rooms[ i ].SetName( name );
+			m_rooms[ i ].SetMaxPeople( max );
 			return i;
 		}
 	}
 }
 
-void ChattingServer::SystemMessage( vector< Session* >& container, const string& message )
+void ChattingServer::SystemMessage( const vector< Session* >& container, const string& message )
 {
 	for ( auto& user : container )
 	{

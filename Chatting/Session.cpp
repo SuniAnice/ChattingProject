@@ -14,7 +14,6 @@ Session::Session( SOCKET& sock, PCSTR& ip, ChattingServer& server ) : m_socket( 
 Session::~Session()
 {
 	m_currentScene->ExitScene();
-	delete m_currentScene;
 }
 
 SOCKET& Session::GetSocket()
@@ -32,14 +31,14 @@ char* Session::GetBuffer()
 	return m_buffer;
 }
 
-bool Session::IsProcessing()
+bool Session::IsProcessing() const
 {
 	return m_isProcessing;
 }
 
-int Session::GetRoomNumber()
+int Session::GetRoomNumber() const
 {
-	return 0;
+	return m_roomNumber;
 }
 
 ChattingServer* Session::GetServer()
@@ -47,12 +46,12 @@ ChattingServer* Session::GetServer()
 	return m_server;
 }
 
-Scene* Session::GetCurrentScene()
+shared_ptr< Scene > Session::GetCurrentScene()
 {
 	return m_currentScene;
 }
 
-bool Session::InInLobby()
+bool Session::InInLobby() const
 {
 	return m_isInLobby;
 }
@@ -68,7 +67,7 @@ void Session::SetRoomNumber( int number )
 	m_roomNumber = number;
 }
 
-void Session::SetScene( Scene* scene )
+void Session::SetScene( shared_ptr< Scene > scene )
 {
 	m_currentScene = scene;
 }
@@ -133,7 +132,7 @@ void Session::BroadcastMessage()
 {
 	string chatting = m_name + " : " + m_buffer;
 	// 현재 플레이어가 접속한 대화방의 모든 플레이어에게 버퍼의 내용 전송
-	for ( auto& user : m_server->m_rooms[ m_roomNumber ].m_chatters )
+	for ( auto& user : m_server->m_rooms[ m_roomNumber ].GetChatters() )
 	{
 		user->SendChat( chatting );
 	}
@@ -179,8 +178,8 @@ bool Session::ProcessCommand()
 		// 서버에 방 생성을 요청
 		m_roomNumber = m_server->MakeRoom( name, max );
 		m_isInLobby = false;
-		m_server->m_rooms[ m_roomNumber ].m_chatters.push_back( this );
-		m_server->SystemMessage( m_server->m_rooms[ m_roomNumber ].m_chatters, m_name + "님이 대화방에 입장했습니다.\r\n" );
+		m_server->m_rooms[ m_roomNumber ].GetChatters().push_back( this );
+		m_server->SystemMessage( m_server->m_rooms[ m_roomNumber ].GetChatters(), m_name + "님이 대화방에 입장했습니다.\r\n" );
 		m_currentScene->ChangeScene();
 	}
 	break;
@@ -199,12 +198,12 @@ bool Session::ProcessCommand()
 		if ( roomNum >= 1 && m_server->m_rooms.count( roomNum ) )
 		{
 			// 방 인원수가 가득 찼는지 체크
-			if ( m_server->m_rooms[ roomNum ].m_maxPeople > m_server->m_rooms[ roomNum ].m_chatters.size() )
+			if ( m_server->m_rooms[ roomNum ].GetMaxPeople() > m_server->m_rooms[ roomNum ].GetChatters().size() )
 			{
 				m_roomNumber = roomNum;
 				m_isInLobby = false;
-				m_server->m_rooms[ roomNum ].m_chatters.push_back( this );
-				m_server->SystemMessage( m_server->m_rooms[ m_roomNumber ].m_chatters, m_name + "님이 대화방에 입장했습니다.\r\n" );
+				m_server->m_rooms[ roomNum ].GetChatters().push_back( this );
+				m_server->SystemMessage( m_server->m_rooms[ m_roomNumber ].GetChatters(), m_name + "님이 대화방에 입장했습니다.\r\n" );
 				m_currentScene->ChangeScene();
 			}
 			else
@@ -248,7 +247,7 @@ bool Session::ProcessCommand()
 		string message = "방 목록을 출력합니다.\r\n";
 		for ( auto& room : m_server->m_rooms )
 		{
-			message = message + to_string( room.first ) + "	(" + to_string( room.second.m_chatters.size() ) + " / " + to_string( room.second.m_maxPeople ) + ")	" + room.second.m_name + "\r\n";
+			message = message + to_string( room.first ) + "	(" + to_string( room.second.GetChatters().size() ) + " / " + to_string( room.second.GetMaxPeople() ) + ")	" + room.second.GetName() + "\r\n";
 		}
 		SendChat( message );
 	}
@@ -297,9 +296,9 @@ bool Session::ProcessCommand()
 		if ( roomNumber != 0 && m_server->m_rooms.count( roomNumber ) != 0 )
 		{
 			string message = "해당 방의 정보를 출력합니다.\r\n";
-			message = message + "이름 : " + m_server->m_rooms[ roomNumber ].m_name + "	정원 : " + to_string( m_server->m_rooms[ roomNumber ].m_maxPeople ) + "\r\n";
-			message = message + "참가자 : " + to_string( m_server->m_rooms[ roomNumber ].m_chatters.size() ) + "\r\n";
-			for ( auto& player : m_server->m_rooms[ roomNumber ].m_chatters )
+			message = message + "이름 : " + m_server->m_rooms[ roomNumber ].GetName() + "	정원 : " + to_string( m_server->m_rooms[ roomNumber ].GetMaxPeople() ) + "\r\n";
+			message = message + "참가자 : " + to_string( m_server->m_rooms[ roomNumber ].GetChatters().size() ) + "\r\n";
+			for ( auto& player : m_server->m_rooms[ roomNumber ].GetChatters() )
 			{
 				message = message + player->m_name + "	" + player->m_ip + "\r\n";
 			}
