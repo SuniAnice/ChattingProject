@@ -9,6 +9,7 @@
 class LobbyScene : public Scene
 {
 public:
+	LobbyScene() = delete;
 	LobbyScene( Session* p );
 	virtual ~LobbyScene() {}
 	virtual void ExecutionInput( vector < Session* > container );

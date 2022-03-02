@@ -9,6 +9,7 @@
 class LoginScene : public Scene
 {
 public:
+	LoginScene() = delete;
 	LoginScene( Session* p ) { parent = p; }
 	virtual ~LoginScene() {}
 	virtual void ExecutionInput( vector < Session* > container );

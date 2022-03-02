@@ -109,6 +109,7 @@ int main()
 			// send
 			if ( FD_ISSET( sock->m_socket, &writeSet ) )
 			{
+				// 현재 Scene에 맞는 입력 처리
 				sock->m_currentScene->ExecutionInput( g_userSockets );
 			}
 			iter++;
