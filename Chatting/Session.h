@@ -13,9 +13,6 @@ constexpr int BUFFER_SIZE = 1024;
 constexpr int  SERVER_PORT = 4000;
 
 
-using namespace std;
-
-
 class Scene;
 
 class ChattingServer;
@@ -33,9 +30,9 @@ private:
 	bool m_isNameSet;
 	int m_roomNumber;
 	ChattingServer* m_server;
-	shared_ptr<Scene> m_currentScene;
+	std::shared_ptr<Scene> m_currentScene;
 	bool m_isInLobby;
-	string m_name;
+	std::string m_name;
 public:
 	Session() = delete;
 
@@ -56,16 +53,16 @@ public:
 
 	ChattingServer* GetServer();
 
-	shared_ptr< Scene > GetCurrentScene();
+	std::shared_ptr< Scene > GetCurrentScene();
 
 	bool InInLobby() const;
 
-	string& GetName();
+	std::string& GetName();
 
 	//Setter 함수들
 	void SetRoomNumber( int number );
 
-	void SetScene( shared_ptr< Scene > scene );
+	void SetScene( std::shared_ptr< Scene > scene );
 
 	void SetIsInLobby( bool isInLobby );
 
@@ -75,7 +72,7 @@ public:
 	int Recv();
 
 	// 해당 세션의 플레이어에게 메시지를 전송하는 함수
-	int SendChat( const string& message ) const;
+	int SendChat( const std::string& message ) const;
 
 	// 해당 세션의 플레이어가 같은 컨테이너에 있는 플레이어들에게 메시지를 전송하는 함수
 	void BroadcastMessage();

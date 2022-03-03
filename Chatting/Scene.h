@@ -3,9 +3,6 @@
 #pragma once
 
 
-using namespace std;
-
-
 class Session;
 
 class Scene

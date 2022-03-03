@@ -4,6 +4,7 @@
 #include "ChattingServer.h"
 #include "LoginScene.h"
 #include "Session.h"
+#include "StringTable.h"
 #include <iostream>
 #include <memory>
 
@@ -11,15 +12,12 @@
 #pragma comment( lib, "Ws2_32.lib" )
 
 
-using namespace std;
-
-
 int main()
 {
 	WSADATA wsaData;
 	if ( WSAStartup( MAKEWORD( 2, 0 ), &wsaData ) != 0 )
 	{
-		cout << "WSAStartup" << endl;
+		std::cout << str::errormsg::WSASTARTUP << std::endl;
 		return -1;
 	}
 
@@ -52,7 +50,7 @@ int main()
 
 		if ( select( 0, &readSet, &writeSet, NULL, NULL ) == SOCKET_ERROR )
 		{
-			cout << "select error" << endl;
+			std::cout << str::errormsg::SELECT << std::endl;
 		}
 
 		// accept 처리
@@ -62,16 +60,16 @@ int main()
 			SOCKET clientSocket = WSAAccept( listenSocket, reinterpret_cast< sockaddr* >( &clientAddress ), &addressSize, NULL, NULL );
 			if ( clientSocket == INVALID_SOCKET )
 			{
-				cout << "accept error" << endl;
+				std::cout << str::errormsg::ACCEPT << std::endl;
 			}
 			else
 			{
 				// 컨테이너에 유저 소켓 등록
 				char buf[ 32 ];
 				auto ip = inet_ntop( AF_INET, &clientAddress.sin_addr, buf, sizeof(buf) );
-				cout << "클라이언트 접속 : " << ip << endl;
+				std::cout << str::msg::CLIENT_LOGON << ip << std::endl;
 				Session* info = new Session( clientSocket, ip, server );
-				info->SetScene( make_shared< LoginScene >( info ) );
+				info->SetScene( std::make_shared< LoginScene >( info ) );
 				server.m_userSockets.push_back( info );
 			}
 		}
@@ -88,8 +86,8 @@ int main()
 				if ( retVal == SOCKET_ERROR )
 				{
 					// 컨테이너에서 유저 소켓 삭제
-					cout << "recv error" << endl;
-					cout << "클라이언트 접속종료 : " << sock->GetIp() << endl;
+					std::cout << str::errormsg::RECV << std::endl;
+					std::cout << str::msg::CLIENT_LOGOUT << sock->GetIp() << std::endl;
 					server.m_userNames.erase( sock->GetName() );
 					delete ( *iter );
 					iter = server.m_userSockets.erase( iter );
@@ -98,7 +96,7 @@ int main()
 				else if ( retVal == 0 )
 				{
 					// 컨테이너에서 유저 소켓 삭제
-					cout << "클라이언트 접속종료 : " << sock->GetIp() << endl;
+					std::cout << str::msg::CLIENT_LOGOUT << sock->GetIp() << std::endl;
 					server.m_userNames.erase( sock->GetName() );
 					delete ( *iter );
 					iter = server.m_userSockets.erase( iter );
@@ -116,7 +114,7 @@ int main()
 				if ( !sock->GetCurrentScene()->ExecutionInput() )
 				{
 					// 컨테이너에서 유저 소켓 삭제
-					cout << "클라이언트 접속종료 : " << sock->GetIp() << endl;
+					std::cout << str::msg::CLIENT_LOGOUT << sock->GetIp() << std::endl;
 					server.m_userNames.erase( sock->GetName() );
 					delete ( *iter );
 					iter = server.m_userSockets.erase( iter );

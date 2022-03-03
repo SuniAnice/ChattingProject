@@ -4,7 +4,7 @@
 #include "ChattingServer.h"
 #include "Session.h"
 
-int ChattingServer::MakeRoom( const string& name, int max )
+int ChattingServer::MakeRoom( const std::string& name, int max )
 {
 	for ( int i = 1; ; i++ )
 	{
@@ -17,7 +17,7 @@ int ChattingServer::MakeRoom( const string& name, int max )
 	}
 }
 
-void ChattingServer::SystemMessage( const vector< Session* >& container, const string& message )
+void ChattingServer::SystemMessage( const std::vector< Session* >& container, const std::string& message )
 {
 	for ( auto& user : container )
 	{

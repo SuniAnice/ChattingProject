@@ -3,6 +3,7 @@
 #include "ChattingServer.h"
 #include "Scene.h"
 #include "Session.h"
+#include "StringTable.h"
 #include <sstream>
 
 
@@ -46,7 +47,7 @@ ChattingServer* Session::GetServer()
 	return m_server;
 }
 
-shared_ptr< Scene > Session::GetCurrentScene()
+std::shared_ptr< Scene > Session::GetCurrentScene()
 {
 	return m_currentScene;
 }
@@ -57,7 +58,7 @@ bool Session::InInLobby() const
 }
 
 
-string& Session::GetName()
+std::string& Session::GetName()
 {
 	return m_name;
 }
@@ -67,7 +68,7 @@ void Session::SetRoomNumber( int number )
 	m_roomNumber = number;
 }
 
-void Session::SetScene( shared_ptr< Scene > scene )
+void Session::SetScene( std::shared_ptr< Scene > scene )
 {
 	m_currentScene = scene;
 }
@@ -98,7 +99,7 @@ int Session::Recv()
 	return retVal;
 }
 
-int Session::SendChat( const string& message ) const
+int Session::SendChat( const std::string& message ) const
 {
 	int retVal = send( m_socket, message.c_str(), message.size(), 0 );
 	return retVal;
@@ -106,7 +107,7 @@ int Session::SendChat( const string& message ) const
 
 bool Session::SetName()
 {
-	stringstream stream;
+	std::stringstream stream;
 	stream.str( m_buffer );
 	stream >> m_name;
 
@@ -114,12 +115,12 @@ bool Session::SetName()
 	if ( m_server->m_userNames.count( m_name ) == 0 )
 	{
 		m_isNameSet = true;
-		SendChat( m_name + "을 닉네임으로 사용합니다\r\n" );
+		SendChat( m_name + str::msg::PLAYER_USINGNICKNAME );
 		m_server->m_userNames[ m_name ] = this;
 	}
 	else
 	{
-		SendChat( "중복된 닉네임이 존재합니다\r\n" );
+		SendChat( str::msg::PLAYER_NICKNAMEEXIST );
 		InitializeBuffer();
 		return false;
 	}
@@ -130,7 +131,7 @@ bool Session::SetName()
 
 void Session::BroadcastMessage()
 {
-	string chatting = m_name + " : " + m_buffer;
+	std::string chatting = m_name + " : " + m_buffer;
 	// 현재 플레이어가 접속한 대화방의 모든 플레이어에게 버퍼의 내용 전송
 	for ( auto& user : m_server->m_rooms[ m_roomNumber ].GetChatters() )
 	{
@@ -141,9 +142,9 @@ void Session::BroadcastMessage()
 
 bool Session::ProcessCommand()
 {
-	stringstream stream;
+	std::stringstream stream;
 	stream.str( m_buffer );
-	string tmp;
+	std::string tmp;
 	// 스트림에서 명령어 제거
 	stream >> tmp;
 
@@ -158,28 +159,28 @@ bool Session::ProcessCommand()
 		// 방 만들기
 		if ( isInRoom )
 		{
-			SendChat( "잘못된 명령어 입력입니다.\r\n" );
+			SendChat( str::errormsg::COMMAND );
 			break;
 		}
-		string name;
+		std::string name;
 		int max = -1;
 		stream >> max;
 		if ( max <= 1 )
 		{
-			SendChat( "방 만들기 명령어 : a [제한인원] [방제목] (최소 2명)\r\n" );
+			SendChat( str::msg::PLAYER_FAILMAKEROOM_MAX );
 			break;
 		}
 		stream >> name;
 		if ( name.size() <= 1 )
 		{
-			SendChat( "방 만들기 명령어 : a [제한인원] [방제목] (최소 제목 글자수 2)\r\n" );
+			SendChat( str::msg::PLAYER_FAILMAKEROOM_NAME );
 			break;
 		}
 		// 서버에 방 생성을 요청
 		m_roomNumber = m_server->MakeRoom( name, max );
 		m_isInLobby = false;
 		m_server->m_rooms[ m_roomNumber ].GetChatters().push_back( this );
-		m_server->SystemMessage( m_server->m_rooms[ m_roomNumber ].GetChatters(), m_name + "님이 대화방에 입장했습니다.\r\n" );
+		m_server->SystemMessage( m_server->m_rooms[ m_roomNumber ].GetChatters(), m_name + str::msg::PLAYER_ENTERROOM );
 		m_currentScene->ChangeScene();
 	}
 	break;
@@ -189,7 +190,7 @@ bool Session::ProcessCommand()
 		// 방 입장
 		if ( isInRoom )
 		{
-			SendChat( "잘못된 명령어 입력입니다.\r\n" );
+			SendChat( str::errormsg::COMMAND );
 			break;
 		}
 		int roomNum = -1;
@@ -203,17 +204,17 @@ bool Session::ProcessCommand()
 				m_roomNumber = roomNum;
 				m_isInLobby = false;
 				m_server->m_rooms[ roomNum ].GetChatters().push_back( this );
-				m_server->SystemMessage( m_server->m_rooms[ m_roomNumber ].GetChatters(), m_name + "님이 대화방에 입장했습니다.\r\n" );
+				m_server->SystemMessage( m_server->m_rooms[ m_roomNumber ].GetChatters(), m_name + str::msg::PLAYER_ENTERROOM );
 				m_currentScene->ChangeScene();
 			}
 			else
 			{
-				SendChat( "방이 가득 찼습니다.\r\n" );
+				SendChat( str::msg::PLAYER_ROOMISFULL );
 			}
 		}
 		else
 		{
-			SendChat( "방 입장 명령어 : j [방 번호] (방 입장에 실패했습니다.)\r\n" );
+			SendChat( str::msg::PLAYER_FAILENTERROOM );
 		}
 	}
 	break;
@@ -244,10 +245,10 @@ bool Session::ProcessCommand()
 	case 'O':
 	{
 		// 방 목록
-		string message = "방 목록을 출력합니다.\r\n";
+		std::string message = str::msg::PRINT_ROOMLIST;
 		for ( auto& room : m_server->m_rooms )
 		{
-			message = message + to_string( room.first ) + "	(" + to_string( room.second.GetChatters().size() ) + " / " + to_string( room.second.GetMaxPeople() ) + ")	" + room.second.GetName() + "\r\n";
+			message = message + std::to_string( room.first ) + "	(" + std::to_string( room.second.GetChatters().size() ) + " / " + std::to_string( room.second.GetMaxPeople() ) + ")	" + room.second.GetName() + "\r\n";
 		}
 		SendChat( message );
 	}
@@ -256,7 +257,7 @@ bool Session::ProcessCommand()
 	case 'L':
 	{
 		// 접속중인 플레이어
-		string message = "접속중인 플레이어들을 출력합니다.\r\n";
+		std::string message = str::msg::PRINT_PLAYERLIST;
 		for ( auto& player : m_server->m_userSockets )
 		{
 			message = message + player->m_name + "	" + player->m_ip + "\r\n";
@@ -268,21 +269,21 @@ bool Session::ProcessCommand()
 	case 'I':
 	{
 		// 플레이어 정보 보기
-		string player;
+		std::string player;
 		stream >> player;
 		if ( m_server->m_userNames.count( player ) != 0 )
 		{
-			string message = "해당 플레이어의 정보를 출력합니다.\r\n";
-			message = message + "닉네임 : " + player + "	ip : " + m_server->m_userNames[player]->m_ip + "	위치 : ";
+			std::string message = str::msg::PRINT_PLAYERINFO;
+			message = message + str::msg::PRINT_PLAYERINFO_NAME + player + str::msg::PRINT_PLAYERINFO_IP + m_server->m_userNames[player]->m_ip + str::msg::PRINT_PLAYERINFO_LOCATION;
 			// 로비에 있는지 판단
-			if ( m_server->m_userNames[ player ]->m_roomNumber == 0 )	message = message + "로비\r\n";
-			else message = message + to_string( m_server->m_userNames[ player ]->m_roomNumber ) + "번 채팅방 \r\n";
+			if ( m_server->m_userNames[ player ]->m_roomNumber == 0 )	message = message + str::msg::PRINT_PLAYERINFO_LOBBY;
+			else message = message + std::to_string( m_server->m_userNames[ player ]->m_roomNumber ) + str::msg::PRINT_PLAYERINFO_ROOM;
 
 			SendChat( message );
 		}
 		else
 		{
-			SendChat( "플레이어 정보 명령어 : i [닉네임] (해당 닉네임이 존재하지 않습니다)\r\n" );
+			SendChat( str::msg::PRINT_FAILPLAYERINFO );
 		}
 	}
 		break;
@@ -295,9 +296,9 @@ bool Session::ProcessCommand()
 		// 방이 존재할 경우
 		if ( roomNumber != 0 && m_server->m_rooms.count( roomNumber ) != 0 )
 		{
-			string message = "해당 방의 정보를 출력합니다.\r\n";
-			message = message + "이름 : " + m_server->m_rooms[ roomNumber ].GetName() + "	정원 : " + to_string( m_server->m_rooms[ roomNumber ].GetMaxPeople() ) + "\r\n";
-			message = message + "참가자 : " + to_string( m_server->m_rooms[ roomNumber ].GetChatters().size() ) + "\r\n";
+			std::string message = str::msg::PRINT_ROOMINFO;
+			message = message + str::msg::PRINT_ROOMINFO_NAME + m_server->m_rooms[ roomNumber ].GetName() + str::msg::PRINT_ROOMINFO_CAPACITY + std::to_string( m_server->m_rooms[ roomNumber ].GetMaxPeople() ) + "\r\n";
+			message = message + str::msg::PRINT_ROOMINFO_PLAYER + std::to_string( m_server->m_rooms[ roomNumber ].GetChatters().size() ) + "\r\n";
 			for ( auto& player : m_server->m_rooms[ roomNumber ].GetChatters() )
 			{
 				message = message + player->m_name + "	" + player->m_ip + "\r\n";
@@ -306,7 +307,7 @@ bool Session::ProcessCommand()
 		}
 		else
 		{
-			SendChat( "방 정보 명령어 : p [방 번호] (해당 채팅방이 존재하지 않습니다)\r\n" );
+			SendChat( str::msg::PRINT_FAILROOMINFO );
 		}
 	}
 		break;
@@ -314,20 +315,20 @@ bool Session::ProcessCommand()
 	case 'T':
 	{
 		// 귓속말 처리
-		string receiver;
-		string message;
+		std::string receiver;
+		std::string message;
 
 		stream >> receiver;
 		// 해당 닉네임을 가진 사람이 존재할 경우
 		if ( m_server->m_userNames.count( receiver ) != 0 )
 		{
 			stream >> message;
-			SendChat( receiver + "님에게 귓속말 : " + message + "\r\n" );
-			m_server->m_userNames[ receiver ]->SendChat( m_name + "님의 귓속말 : " + message + "\r\n" );
+			SendChat( receiver + str::msg::WISPER_TO + message + "\r\n" );
+			m_server->m_userNames[ receiver ]->SendChat( m_name + str::msg::WISPER_FROM + message + "\r\n" );
 		}
 		else
 		{
-			SendChat( "귓속말 명령어 : t [닉네임] [할 말] (해당 닉네임이 존재하지 않습니다)\r\n" );
+			SendChat( str::msg::WISPER_FAIL );
 		}
 
 	}
@@ -338,7 +339,7 @@ bool Session::ProcessCommand()
 		// 방 퇴장
 		if ( !isInRoom )
 		{
-			SendChat( "잘못된 명령어 입력입니다.\r\n" );
+			SendChat( str::errormsg::COMMAND );
 			break;
 		}
 		m_currentScene->ExitScene();
@@ -347,23 +348,23 @@ bool Session::ProcessCommand()
 	case 'h':
 	case 'H':
 	{
-		string message = "----------------------------------------------------\r\n명령어 목록을 출력합니다.\r\n----------------------------------------------------\r\n";
+		std::string message = str::msg::INFO_COMMAND;
 		if ( isInRoom )
 		{
-			message = message + "플레이어 목록 :		L\r\n플레이어 정보 :		i [닉네임]\r\n귓속말 :		t [닉네임] [할 말]\r\n방 목록 :		o\r\n방 정보 :		p [방 번호]\r\n방 나가기 :		q\r\n종료 :			x\r\n";
+			message = message + str::msg::INFO_COMMAND_ROOM;
 			SendChat( message );
 		}
 		else
 		{
-			message = message + "방 만들기 :		a [인원수] [방제목]\r\n플레이어 목록 :		L\r\n플레이어 정보 :		i [닉네임]\r\n귓속말 :		t [닉네임] [할 말]\r\n방 목록 :		o\r\n방 정보 :		p [방 번호]\r\n방 입장 :		j\r\n종료 :			x\r\n";
+			message = message + str::msg::INFO_COMMAND_LOBBY;
 			SendChat( message );
 		}
 	}
 		break;
 	default:
 	{
-		if ( isInRoom )	SendChat( "명령어 보기(h) 나가기(X)\r\n" );
-		else			SendChat( "----------------------------------------------------\r\n로비에 오신 것을 환영합니다\r\n----------------------------------------------------\r\n명령어 보기(h) 나가기(X)\r\n" );
+		if ( isInRoom )	SendChat( str::msg::DEFAULT_ROOM );
+		else			SendChat( str::msg::DEFAULT_LOBBY );
 	}
 	break;
 	}

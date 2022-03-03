@@ -2,7 +2,7 @@
 
 #include "ChattingRoom.h"
 
-string& ChattingRoom::GetName()
+std::string& ChattingRoom::GetName()
 {
     return m_name;
 }
@@ -12,12 +12,12 @@ int ChattingRoom::GetMaxPeople() const
     return m_maxPeople;
 }
 
-vector<Session*>& ChattingRoom::GetChatters()
+std::vector<Session*>& ChattingRoom::GetChatters()
 {
     return m_chatters;
 }
 
-void ChattingRoom::SetName( const string& name )
+void ChattingRoom::SetName( const std::string& name )
 {
     m_name = name;
 }

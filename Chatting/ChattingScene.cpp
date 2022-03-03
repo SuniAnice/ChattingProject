@@ -6,6 +6,7 @@
 #include "LobbyScene.h"
 #include "Scene.h"
 #include "Session.h"
+#include "StringTable.h"
 #include <memory>
 
 
@@ -31,11 +32,11 @@ bool ChattingScene::ExecutionInput()
 void ChattingScene::ExitScene()
 {
 	// 플레이어가 채팅방에서 로비로 돌아갈 경우의 처리, 방의 모든 플레이어에게 퇴장 메시지 전송 후 컨테이너에서 제거
-	vector<Session*>* chatters = &parent->GetServer()->m_rooms[ parent->GetRoomNumber() ].GetChatters();
-	parent->GetServer()->SystemMessage( *chatters, parent->GetName() + "님이 대화방에서 나갔습니다.\r\n" );
+	std::vector<Session*>* chatters = &parent->GetServer()->m_rooms[ parent->GetRoomNumber() ].GetChatters();
+	parent->GetServer()->SystemMessage( *chatters, parent->GetName() + str::msg::PLAYER_EXITROOM.data() );
 	chatters->erase( remove(chatters->begin(), chatters->end(), parent), chatters->end() );
 	if ( chatters->size() == 0 )	parent->GetServer()->m_rooms.erase( parent->GetRoomNumber() );
 	parent->SetIsInLobby(true);
 	parent->SetRoomNumber(0);
-	parent->SetScene( make_shared< LobbyScene >( parent ) );
+	parent->SetScene( std::make_shared< LobbyScene >( parent ) );
 }
