@@ -183,12 +183,14 @@ bool Session::ProcessCommand()
 		std::string name;
 		int max = -1;
 		stream >> max;
+		// 최대 인원수 체크
 		if ( max <= 1 || max > 20 )
 		{
 			SendChat( str::msg::PLAYER_FAILMAKEROOM_MAX );
 			break;
 		}
 		stream >> name;
+		// 방 제목 길이 체크
 		if ( name.size() <= 1 || name.size() > 20)
 		{
 			SendChat( str::msg::PLAYER_FAILMAKEROOM_NAME );
@@ -197,6 +199,7 @@ bool Session::ProcessCommand()
 		// 서버에 방 생성을 요청
 		m_roomNumber = m_server->MakeRoom( name, max );
 		m_isInLobby = false;
+		// 채팅방 컨테이너에 자신을 넣고, 시스템 메시지 출력 후 장면 이동
 		m_server->m_rooms[ m_roomNumber ].GetChatters().push_back( this );
 		m_server->SystemMessage( m_server->m_rooms[ m_roomNumber ].GetChatters(), m_name + str::msg::PLAYER_ENTERROOM );
 		m_currentScene->ChangeScene();
@@ -220,6 +223,7 @@ bool Session::ProcessCommand()
 			// 방 인원수가 가득 찼는지 체크
 			if ( m_server->m_rooms[ roomNum ].GetMaxPeople() > m_server->m_rooms[ roomNum ].GetChatters().size() )
 			{
+				// 채팅방 컨테이너에 자신을 넣고, 시스템 메시지 출력 후 장면 이동
 				m_roomNumber = roomNum;
 				m_isInLobby = false;
 				m_server->m_rooms[ roomNum ].GetChatters().push_back( this );
@@ -246,6 +250,7 @@ bool Session::ProcessCommand()
 		{
 			if ( *( ptr + 2 ) == '\r' && *( ptr + 3 ) == '\n' )
 			{
+				// 안전한 종료를 위해 채팅방에서 퇴장 후 종료
 				m_currentScene->ExitScene();
 				closesocket( m_socket );
 				return false;
@@ -352,7 +357,7 @@ bool Session::ProcessCommand()
 			SendChat( str::errormsg::SELFERROR );
 			break;
 		}
-		// 해당 닉네임을 가진 사람이 존재할 경우
+		// 해당 닉네임을 가진 사람이 존재할 경우 초대 메시지 전송ㄴ
 		if ( m_server->m_userNames.count( receiver ) != 0 )
 		{
 			SendChat( receiver + str::msg::INVITE );
@@ -377,7 +382,7 @@ bool Session::ProcessCommand()
 			SendChat( str::errormsg::SELFERROR );
 			break;
 		}
-		// 해당 닉네임을 가진 사람이 존재할 경우
+		// 해당 닉네임을 가진 사람이 존재할 경우 귓속말 전송
 		if ( m_server->m_userNames.count( receiver ) != 0 )
 		{
 			stream >> message;

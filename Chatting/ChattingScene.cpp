@@ -32,6 +32,7 @@ void ChattingScene::ExitScene()
 	std::vector<Session*>* chatters = &parent->GetServer()->m_rooms[ parent->GetRoomNumber() ].GetChatters();
 	parent->GetServer()->SystemMessage( *chatters, parent->GetName() + str::msg::PLAYER_EXITROOM.data() );
 	chatters->erase( remove(chatters->begin(), chatters->end(), parent), chatters->end() );
+	// 채팅방에 아무도 없을 경우 방 제거
 	if ( chatters->size() == 0 )	parent->GetServer()->m_rooms.erase( parent->GetRoomNumber() );
 	parent->SetIsInLobby(true);
 	parent->SetRoomNumber(0);

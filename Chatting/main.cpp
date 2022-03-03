@@ -77,18 +77,18 @@ int main()
 		// 데이터 통신
 		for ( auto iter = server.m_userSockets.begin(); iter != server.m_userSockets.end(); )
 		{
-			auto sock = ( *iter );
+			auto session = ( *iter );
 
 			// recv
-			if ( FD_ISSET( sock->GetSocket(), &readSet ) )
+			if ( FD_ISSET( session->GetSocket(), &readSet ) )
 			{
-				retVal = sock->Recv();
+				retVal = session->Recv();
 				if ( retVal == SOCKET_ERROR )
 				{
 					// 컨테이너에서 유저 소켓 삭제
 					std::cout << str::errormsg::RECV << std::endl;
-					std::cout << str::msg::CLIENT_LOGOUT << sock->GetIp() << std::endl;
-					server.m_userNames.erase( sock->GetName() );
+					std::cout << str::msg::CLIENT_LOGOUT << session->GetIp() << std::endl;
+					server.m_userNames.erase( session->GetName() );
 					delete ( *iter );
 					iter = server.m_userSockets.erase( iter );
 					continue;
@@ -96,26 +96,26 @@ int main()
 				else if ( retVal == 0 )
 				{
 					// 컨테이너에서 유저 소켓 삭제
-					std::cout << str::msg::CLIENT_LOGOUT << sock->GetIp() << std::endl;
-					server.m_userNames.erase( sock->GetName() );
+					std::cout << str::msg::CLIENT_LOGOUT << session->GetIp() << std::endl;
+					server.m_userNames.erase( session->GetName() );
 					delete ( *iter );
 					iter = server.m_userSockets.erase( iter );
 					continue;
 				}	
 				// 사용자의 입력을 처리할 필요가 있을 경우
-				if ( sock->IsProcessing() )
-					FD_SET( sock->GetSocket(), &writeSet );
+				if ( session->IsProcessing() )
+					FD_SET( session->GetSocket(), &writeSet );
 			}
 
 			// send
-			if ( FD_ISSET( sock->GetSocket(), &writeSet ) )
+			if ( FD_ISSET( session->GetSocket(), &writeSet ) )
 			{
 				// 현재 Scene에 맞는 입력 처리 -> false인 경우에는 플레이어 접속 종료
-				if ( !sock->GetCurrentScene()->ExecutionInput() )
+				if ( !session->GetCurrentScene()->ExecutionInput() )
 				{
 					// 컨테이너에서 유저 소켓 삭제
-					std::cout << str::msg::CLIENT_LOGOUT << sock->GetIp() << std::endl;
-					server.m_userNames.erase( sock->GetName() );
+					std::cout << str::msg::CLIENT_LOGOUT << session->GetIp() << std::endl;
+					server.m_userNames.erase( session->GetName() );
 					delete ( *iter );
 					iter = server.m_userSockets.erase( iter );
 					continue;
