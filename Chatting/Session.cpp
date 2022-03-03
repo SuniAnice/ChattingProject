@@ -89,6 +89,13 @@ bool Session::SetName()
 	stream.str( m_buffer );
 	stream >> m_name;
 
+	if ( m_name.size() < 2 || m_name.size() > 8 )
+	{
+		SendChat( str::msg::PLAYER_NICKNAMESIZEERROR );
+		InitializeBuffer();
+		return false;
+	}
+
 	// 중복된 닉네임이 있는지 체크 후, 없다면 컨테이너에 등록
 	if ( m_server->m_userNames.count( m_name ) == 0 )
 	{

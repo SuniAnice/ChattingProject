@@ -29,6 +29,7 @@ namespace str
 
 		const std::string PLAYER_USINGNICKNAME = "을 닉네임으로 사용합니다\r\n";
 		const std::string PLAYER_NICKNAMEEXIST = "중복된 닉네임이 존재합니다\r\n";
+		const std::string PLAYER_NICKNAMESIZEERROR = "닉네임은 2글자 이상, 8글자 이하로 해주세요.\r\n";
 
 		const std::string PLAYER_FAILMAKEROOM_MAX = "방 만들기 명령어 : a [제한인원] [방제목] (최소 2명)\r\n";
 		const std::string PLAYER_FAILMAKEROOM_NAME = "방 만들기 명령어 : a [제한인원] [방제목] (최소 제목 글자수 2)\r\n";
