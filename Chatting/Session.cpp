@@ -211,12 +211,9 @@ bool Session::ProcessCommand()
 				SendChat( str::msg::PLAYER_FAILMAKEROOM_MAX );
 				break;
 			}
-			stream >> name;
-			std::string tmp;
-			while ( stream >> tmp )
-			{
-				name = name + ' ' + tmp;
-			}
+			stream.get();
+			auto cur = stream.tellg();
+			name = buf.substr( cur );
 			// 방 제목 길이 체크
 			if ( name.size() <= 1 || name.size() > 20 )
 			{
@@ -384,7 +381,7 @@ bool Session::ProcessCommand()
 				SendChat( str::errormsg::SELFERROR );
 				break;
 			}
-			// 해당 닉네임을 가진 사람이 존재할 경우 초대 메시지 전송ㄴ
+			// 해당 닉네임을 가진 사람이 존재할 경우 초대 메시지 전송
 			if ( m_server->m_userNames.count( receiver ) != 0 )
 			{
 				SendChat( receiver + str::msg::INVITE );
@@ -412,12 +409,9 @@ bool Session::ProcessCommand()
 			// 해당 닉네임을 가진 사람이 존재할 경우 귓속말 전송
 			if ( m_server->m_userNames.count( receiver ) != 0 )
 			{
-				stream >> message;
-				std::string tmp;
-				while ( stream >> tmp )
-				{
-					message = message + ' ' + tmp;
-				}
+				stream.get();
+				auto cur = stream.tellg();
+				message = buf.substr( cur );
 				SendChat( receiver + str::msg::WISPER_TO + message + "\r\n" );
 				m_server->m_userNames[ receiver ]->SendChat( m_name + str::msg::WISPER_FROM + message + "\r\n" );
 			}
