@@ -180,8 +180,15 @@ bool Session::ProcessCommand()
 		std::string tmp;
 		// 스트림에서 명령어 제거
 		stream >> tmp;
-
 		bool isInRoom = ( m_roomNumber != 0 );
+
+		if ( ( tmp.size() - isInRoom ) != 1 )
+		{
+			if ( isInRoom )	SendChat( str::msg::DEFAULT_ROOM );
+			else			SendChat( str::msg::DEFAULT_LOBBY );
+			continue;
+		}
+
 		char* ptr = &buf[ 0 ];
 		// 방 안일 경우 / 뒤를 명령어로 인식함
 		switch ( *( ptr + isInRoom ) )
