@@ -23,6 +23,7 @@ private:
 	// 소켓 통신을 위한 정보
 	SOCKET m_socket;
 	PCSTR m_ip;
+	USHORT m_port;
 	char m_buffer[ BUFFER_SIZE + 1 ];
 	bool m_isProcessing;
 	int m_recvBytes;
@@ -36,7 +37,7 @@ private:
 public:
 	Session() = delete;
 
-	Session( SOCKET& sock, PCSTR& ip, ChattingServer& server );
+	Session( SOCKET& sock, PCSTR& ip, USHORT port, ChattingServer& server );
 
 	~Session();
 

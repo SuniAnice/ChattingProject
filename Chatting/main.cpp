@@ -67,8 +67,8 @@ int main()
 				// 컨테이너에 유저 소켓 등록
 				char buf[ 32 ];
 				auto ip = inet_ntop( AF_INET, &clientAddress.sin_addr, buf, sizeof(buf) );
-				std::cout << str::msg::CLIENT_LOGON << ip << std::endl;
-				Session* info = new Session( clientSocket, ip, server );
+				std::cout << str::msg::CLIENT_LOGON << ip << ":" << clientAddress.sin_port << std::endl;
+				Session* info = new Session( clientSocket, ip, clientAddress.sin_port, server );
 				info->SetScene( std::make_shared< LoginScene >( info ) );
 				server.m_userSockets.push_back( info );
 			}

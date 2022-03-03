@@ -7,7 +7,7 @@
 #include <sstream>
 
 
-Session::Session( SOCKET& sock, PCSTR& ip, ChattingServer& server ) : m_socket( sock ), m_ip( ip ), m_recvBytes( 0 ), m_isProcessing( false ), m_isNameSet( false ), m_server( &server ), m_roomNumber( 0 )
+Session::Session( SOCKET& sock, PCSTR& ip, USHORT port, ChattingServer& server ) : m_socket( sock ), m_ip( ip ), m_port( port ), m_recvBytes( 0 ), m_isProcessing( false ), m_isNameSet( false ), m_server( &server ), m_roomNumber( 0 )
 {
 	ZeroMemory( m_buffer, BUFFER_SIZE + 1 );
 }
@@ -260,7 +260,7 @@ bool Session::ProcessCommand()
 		std::string message = str::msg::PRINT_PLAYERLIST;
 		for ( auto& player : m_server->m_userSockets )
 		{
-			message = message + player->m_name + "	" + player->m_ip + "\r\n";
+			message = message + player->m_name + "	" + player->m_ip + ":" + std::to_string( player->m_port ) + "\r\n";
 		}
 		SendChat( message );
 	}
@@ -301,13 +301,36 @@ bool Session::ProcessCommand()
 			message = message + str::msg::PRINT_ROOMINFO_PLAYER + std::to_string( m_server->m_rooms[ roomNumber ].GetChatters().size() ) + "\r\n";
 			for ( auto& player : m_server->m_rooms[ roomNumber ].GetChatters() )
 			{
-				message = message + player->m_name + "	" + player->m_ip + "\r\n";
+				message = message + player->m_name + "	" + player->m_ip + ":" + std::to_string( player->m_port ) + "\r\n";
 			}
 			SendChat( message );
 		}
 		else
 		{
 			SendChat( str::msg::PRINT_FAILROOMINFO );
+		}
+	}
+		break;
+	case 'w':
+	case 'W':
+	{
+		// 초대 기능
+		if ( !isInRoom )
+		{
+			SendChat( str::errormsg::COMMAND );
+			break;
+		}
+		std::string receiver;
+		stream >> receiver;
+		// 해당 닉네임을 가진 사람이 존재할 경우
+		if ( m_server->m_userNames.count( receiver ) != 0 )
+		{
+			SendChat( receiver + str::msg::INVITE );
+			m_server->m_userNames[ receiver ]->SendChat( m_name + str::msg::INVITE_FROM + std::to_string( m_roomNumber ) + str::msg::INVITE_TO );
+		}
+		else
+		{
+			SendChat( str::msg::INVITE_FAIL );
 		}
 	}
 		break;
