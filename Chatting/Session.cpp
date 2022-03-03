@@ -212,6 +212,11 @@ bool Session::ProcessCommand()
 				break;
 			}
 			stream >> name;
+			std::string tmp;
+			while ( stream >> tmp )
+			{
+				name = name + ' ' + tmp;
+			}
 			// 规 力格 辨捞 眉农
 			if ( name.size() <= 1 || name.size() > 20 )
 			{
@@ -408,6 +413,11 @@ bool Session::ProcessCommand()
 			if ( m_server->m_userNames.count( receiver ) != 0 )
 			{
 				stream >> message;
+				std::string tmp;
+				while ( stream >> tmp )
+				{
+					message = message + ' ' + tmp;
+				}
 				SendChat( receiver + str::msg::WISPER_TO + message + "\r\n" );
 				m_server->m_userNames[ receiver ]->SendChat( m_name + str::msg::WISPER_FROM + message + "\r\n" );
 			}
