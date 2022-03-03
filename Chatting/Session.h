@@ -31,7 +31,7 @@ private:
 	bool m_isNameSet;
 	int m_roomNumber;
 	ChattingServer* m_server;
-	std::shared_ptr<Scene> m_currentScene;
+	std::unique_ptr<Scene> m_currentScene;
 	bool m_isInLobby;
 	std::string m_name;
 	time_t m_enterTime;
@@ -55,7 +55,7 @@ public:
 
 	ChattingServer* GetServer();
 
-	std::shared_ptr< Scene > GetCurrentScene();
+	std::unique_ptr< Scene >& GetCurrentScene();
 
 	bool InInLobby() const;
 
@@ -66,7 +66,7 @@ public:
 	//Setter ÇÔ¼öµé
 	void SetRoomNumber( int number );
 
-	void SetScene( std::shared_ptr< Scene > scene );
+	void SetScene( std::unique_ptr< Scene > scene );
 
 	void SetIsInLobby( bool isInLobby );
 

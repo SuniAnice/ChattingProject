@@ -47,7 +47,7 @@ ChattingServer* Session::GetServer()
 	return m_server;
 }
 
-std::shared_ptr< Scene > Session::GetCurrentScene()
+std::unique_ptr< Scene >& Session::GetCurrentScene()
 {
 	return m_currentScene;
 }
@@ -73,9 +73,9 @@ void Session::SetRoomNumber( int number )
 	m_roomNumber = number;
 }
 
-void Session::SetScene( std::shared_ptr< Scene > scene )
+void Session::SetScene( std::unique_ptr< Scene > scene )
 {
-	m_currentScene = scene;
+	m_currentScene = std::move( scene );
 }
 
 void Session::SetIsInLobby( bool isInLobby )

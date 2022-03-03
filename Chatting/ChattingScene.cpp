@@ -35,5 +35,5 @@ void ChattingScene::ExitScene()
 	if ( chatters->size() == 0 )	parent->GetServer()->m_rooms.erase( parent->GetRoomNumber() );
 	parent->SetIsInLobby(true);
 	parent->SetRoomNumber(0);
-	parent->SetScene( std::make_shared< LobbyScene >( parent ) );
+	parent->SetScene( std::make_unique< LobbyScene >( parent ) );
 }
