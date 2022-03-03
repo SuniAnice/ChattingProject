@@ -12,7 +12,7 @@
 #pragma comment( lib, "Ws2_32.lib" )
 
 
-int main()
+int main(int argc, char* argv[])
 {
 	WSADATA wsaData;
 	if ( WSAStartup( MAKEWORD( 2, 0 ), &wsaData ) != 0 )
@@ -25,7 +25,11 @@ int main()
 	SOCKADDR_IN serverAddress;
 	memset( &serverAddress, 0, sizeof( SOCKADDR_IN ) );
 	serverAddress.sin_family = AF_INET;
-	serverAddress.sin_port = htons( SERVER_PORT );
+	if ( argc == 1 )
+		serverAddress.sin_port = htons( SERVER_PORT );
+	else
+		serverAddress.sin_port = htons( atoi( argv[ 1 ] ) );
+
 	serverAddress.sin_addr.S_un.S_addr = INADDR_ANY;
 	bind( listenSocket, reinterpret_cast< sockaddr* >( &serverAddress ), sizeof( serverAddress ) );
 	std::cout << "서버 포트 : "<< htons( serverAddress.sin_port ) << std::endl;
