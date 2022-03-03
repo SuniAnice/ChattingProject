@@ -11,7 +11,6 @@
 LoginScene::LoginScene( Session* p ) : Scene( p )
 {
 	p->SendChat( str::msg::PLAYER_ENTERLOGINSCENE );
-	parent = p;
 }
 
 bool LoginScene::ExecutionInput()

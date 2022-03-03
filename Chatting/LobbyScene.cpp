@@ -7,7 +7,6 @@
 
 LobbyScene::LobbyScene( Session* p ) : Scene( p )
 {
-	parent = p;
 	// 로비 메시지 출력용
 	parent->ProcessCommand();
 }

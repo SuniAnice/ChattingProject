@@ -9,8 +9,8 @@
 #include <memory>
 
 
-constexpr int BUFFER_SIZE = 1024;
-constexpr int  SERVER_PORT = 4000;
+constexpr int	BUFFER_SIZE = 1024;
+constexpr int	SERVER_PORT = 4000;
 
 
 class Scene;

@@ -10,10 +10,7 @@
 #include <memory>
 
 
-ChattingScene::ChattingScene( Session* p ) : Scene( p )
-{
-	parent = p;
-}
+ChattingScene::ChattingScene( Session* p ) : Scene( p ) {}
 
 bool ChattingScene::ExecutionInput()
 {
