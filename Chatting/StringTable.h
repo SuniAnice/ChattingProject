@@ -15,7 +15,7 @@ namespace str
 		const std::string ACCEPT = "Accept Error";
 		const std::string RECV = "Recv Error";
 		const std::string COMMAND = "잘못된 명령어 입력입니다.\r\n";
-
+		const std::string SELFERROR = "대상이 자기 자신입니다.\r\n";
 	}
 	namespace msg
 	{
@@ -31,8 +31,8 @@ namespace str
 		const std::string PLAYER_NICKNAMEEXIST = "중복된 닉네임이 존재합니다\r\n";
 		const std::string PLAYER_NICKNAMESIZEERROR = "닉네임은 2글자 이상, 8글자 이하로 해주세요.\r\n";
 
-		const std::string PLAYER_FAILMAKEROOM_MAX = "방 만들기 명령어 : a [제한인원] [방제목] (최소 2명)\r\n";
-		const std::string PLAYER_FAILMAKEROOM_NAME = "방 만들기 명령어 : a [제한인원] [방제목] (최소 제목 글자수 2)\r\n";
+		const std::string PLAYER_FAILMAKEROOM_MAX = "방 만들기 명령어 : a [제한인원] [방제목] (인원수 2명 ~ 20명)\r\n";
+		const std::string PLAYER_FAILMAKEROOM_NAME = "방 만들기 명령어 : a [제한인원] [방제목] (제목 글자수 2 ~ 20자)\r\n";
 
 		const std::string PLAYER_ROOMISFULL = "방이 가득 찼습니다.\r\n";
 		const std::string PLAYER_FAILENTERROOM = "방 입장 명령어 : j [방 번호] (방 입장에 실패했습니다.)\r\n";

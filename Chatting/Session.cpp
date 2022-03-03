@@ -183,13 +183,13 @@ bool Session::ProcessCommand()
 		std::string name;
 		int max = -1;
 		stream >> max;
-		if ( max <= 1 )
+		if ( max <= 1 || max > 20 )
 		{
 			SendChat( str::msg::PLAYER_FAILMAKEROOM_MAX );
 			break;
 		}
 		stream >> name;
-		if ( name.size() <= 1 )
+		if ( name.size() <= 1 || name.size() > 20)
 		{
 			SendChat( str::msg::PLAYER_FAILMAKEROOM_NAME );
 			break;
@@ -347,6 +347,11 @@ bool Session::ProcessCommand()
 		}
 		std::string receiver;
 		stream >> receiver;
+		if ( receiver == m_name )
+		{
+			SendChat( str::errormsg::SELFERROR );
+			break;
+		}
 		// 해당 닉네임을 가진 사람이 존재할 경우
 		if ( m_server->m_userNames.count( receiver ) != 0 )
 		{
@@ -367,6 +372,11 @@ bool Session::ProcessCommand()
 		std::string message;
 
 		stream >> receiver;
+		if ( receiver == m_name )
+		{
+			SendChat( str::errormsg::SELFERROR );
+			break;
+		}
 		// 해당 닉네임을 가진 사람이 존재할 경우
 		if ( m_server->m_userNames.count( receiver ) != 0 )
 		{
