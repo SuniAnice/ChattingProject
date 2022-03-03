@@ -211,15 +211,28 @@ bool Session::ProcessCommand()
 				SendChat( str::msg::PLAYER_FAILMAKEROOM_MAX );
 				break;
 			}
+			stream >> name;
 			stream.get();
 			auto cur = stream.tellg();
-			name = buf.substr( cur );
+			if ( cur == -1 )
+			{
+				SendChat( str::msg::PLAYER_FAILMAKEROOM_NAME );
+				break;
+			}
+			name = name + buf.substr( cur );
+			name.erase( std::remove_if( name.begin(), name.end(),
+				[]( char n )
+				{
+					return ( n == '\n' || n == '\r' );
+				}
+			), name.end() );
 			// 规 力格 辨捞 眉农
 			if ( name.size() <= 1 || name.size() > 20 )
 			{
 				SendChat( str::msg::PLAYER_FAILMAKEROOM_NAME );
 				break;
 			}
+			
 			// 辑滚俊 规 积己阑 夸没
 			m_roomNumber = m_server->MakeRoom( name, max );
 			m_isInLobby = false;
@@ -411,7 +424,18 @@ bool Session::ProcessCommand()
 			{
 				stream.get();
 				auto cur = stream.tellg();
+				if ( cur == -1 )
+				{
+					SendChat( str::msg::WISPER_FAIL );
+					break;
+				}
 				message = buf.substr( cur );
+				message.erase( std::remove_if( message.begin(), message.end(),
+					[]( char n ) 
+					{
+						return ( n == '\n' || n == '\r' );
+					}
+				), message.end() );
 				SendChat( receiver + str::msg::WISPER_TO + message + "\r\n" );
 				m_server->m_userNames[ receiver ]->SendChat( m_name + str::msg::WISPER_FROM + message + "\r\n" );
 			}
