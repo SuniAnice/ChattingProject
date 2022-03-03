@@ -34,6 +34,7 @@ private:
 	std::shared_ptr<Scene> m_currentScene;
 	bool m_isInLobby;
 	std::string m_name;
+	time_t m_enterTime;
 public:
 	Session() = delete;
 
@@ -60,6 +61,8 @@ public:
 
 	std::string& GetName();
 
+	time_t GetTime();
+
 	//Setter 함수들
 	void SetRoomNumber( int number );
 
@@ -68,6 +71,8 @@ public:
 	void SetIsInLobby( bool isInLobby );
 
 	bool SetName();
+
+	void SetTime( time_t time );
 
 	// 데이터 수신 함수
 	int Recv();

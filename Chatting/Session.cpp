@@ -7,7 +7,7 @@
 #include <sstream>
 
 
-Session::Session( SOCKET& sock, PCSTR& ip, USHORT port, ChattingServer& server ) : m_socket( sock ), m_ip( ip ), m_port( port ), m_recvBytes( 0 ), m_isProcessing( false ), m_isNameSet( false ), m_server( &server ), m_roomNumber( 0 )
+Session::Session( SOCKET& sock, PCSTR& ip, USHORT port, ChattingServer& server ) : m_socket( sock ), m_ip( ip ), m_port( port ), m_recvBytes( 0 ), m_isProcessing( false ), m_isNameSet( false ), m_server( &server ), m_roomNumber( 0 ), m_enterTime( 0 )
 {
 	ZeroMemory( m_buffer, BUFFER_SIZE + 1 );
 }
@@ -63,6 +63,11 @@ std::string& Session::GetName()
 	return m_name;
 }
 
+time_t Session::GetTime()
+{
+	return m_enterTime;
+}
+
 void Session::SetRoomNumber( int number )
 {
 	m_roomNumber = number;
@@ -77,6 +82,36 @@ void Session::SetIsInLobby( bool isInLobby )
 {
 	m_isInLobby = isInLobby;
 }
+
+bool Session::SetName()
+{
+	std::stringstream stream;
+	stream.str( m_buffer );
+	stream >> m_name;
+
+	// 중복된 닉네임이 있는지 체크 후, 없다면 컨테이너에 등록
+	if ( m_server->m_userNames.count( m_name ) == 0 )
+	{
+		m_isNameSet = true;
+		SendChat( m_name + str::msg::PLAYER_USINGNICKNAME );
+		m_server->m_userNames[ m_name ] = this;
+	}
+	else
+	{
+		SendChat( str::msg::PLAYER_NICKNAMEEXIST );
+		InitializeBuffer();
+		return false;
+	}
+
+	InitializeBuffer();
+	return true;
+}
+
+void Session::SetTime( time_t time )
+{
+	m_enterTime = time;
+}
+
 
 int Session::Recv()
 {
@@ -103,30 +138,6 @@ int Session::SendChat( const std::string& message ) const
 {
 	int retVal = send( m_socket, message.c_str(), message.size(), 0 );
 	return retVal;
-}
-
-bool Session::SetName()
-{
-	std::stringstream stream;
-	stream.str( m_buffer );
-	stream >> m_name;
-
-	// 중복된 닉네임이 있는지 체크 후, 없다면 컨테이너에 등록
-	if ( m_server->m_userNames.count( m_name ) == 0 )
-	{
-		m_isNameSet = true;
-		SendChat( m_name + str::msg::PLAYER_USINGNICKNAME );
-		m_server->m_userNames[ m_name ] = this;
-	}
-	else
-	{
-		SendChat( str::msg::PLAYER_NICKNAMEEXIST );
-		InitializeBuffer();
-		return false;
-	}
-	
-	InitializeBuffer();
-	return true;
 }
 
 void Session::BroadcastMessage()
@@ -182,6 +193,7 @@ bool Session::ProcessCommand()
 		m_server->m_rooms[ m_roomNumber ].GetChatters().push_back( this );
 		m_server->SystemMessage( m_server->m_rooms[ m_roomNumber ].GetChatters(), m_name + str::msg::PLAYER_ENTERROOM );
 		m_currentScene->ChangeScene();
+		m_enterTime = time( NULL );
 	}
 	break;
 	case 'j':
@@ -206,6 +218,7 @@ bool Session::ProcessCommand()
 				m_server->m_rooms[ roomNum ].GetChatters().push_back( this );
 				m_server->SystemMessage( m_server->m_rooms[ m_roomNumber ].GetChatters(), m_name + str::msg::PLAYER_ENTERROOM );
 				m_currentScene->ChangeScene();
+				m_enterTime = time( NULL );
 			}
 			else
 			{
@@ -304,7 +317,9 @@ bool Session::ProcessCommand()
 			message = message + str::msg::PRINT_ROOMINFO_PLAYER + std::to_string( m_server->m_rooms[ roomNumber ].GetChatters().size() ) + "\r\n" + str::msg::PRINT_ROOMINFO_TIME + std::to_string( localt.tm_hour ) + ":" + std::to_string( localt.tm_min ) + ":" + std::to_string( localt.tm_sec ) + "\r\n";
 			for ( auto& player : m_server->m_rooms[ roomNumber ].GetChatters() )
 			{
-				message = message + player->m_name + "	" + player->m_ip + ":" + std::to_string( player->m_port ) + "\r\n";
+				time = player->GetTime();
+				localtime_s( &localt, &time );
+				message = message + player->m_name + "	" + player->m_ip + ":" + std::to_string( player->m_port ) + "	" + std::to_string( localt.tm_hour ) + ":" + std::to_string( localt.tm_min ) + ":" + std::to_string( localt.tm_sec ) + "\r\n";
 			}
 			SendChat( message );
 		}
