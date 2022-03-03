@@ -298,7 +298,10 @@ bool Session::ProcessCommand()
 		{
 			std::string message = str::msg::PRINT_ROOMINFO;
 			message = message + str::msg::PRINT_ROOMINFO_NAME + m_server->m_rooms[ roomNumber ].GetName() + str::msg::PRINT_ROOMINFO_CAPACITY + std::to_string( m_server->m_rooms[ roomNumber ].GetMaxPeople() ) + "\r\n";
-			message = message + str::msg::PRINT_ROOMINFO_PLAYER + std::to_string( m_server->m_rooms[ roomNumber ].GetChatters().size() ) + "\r\n";
+			auto time = m_server->m_rooms[ roomNumber ].GetTime();
+			struct tm localt;
+			localtime_s( &localt, &time );
+			message = message + str::msg::PRINT_ROOMINFO_PLAYER + std::to_string( m_server->m_rooms[ roomNumber ].GetChatters().size() ) + "\r\n" + str::msg::PRINT_ROOMINFO_TIME + std::to_string( localt.tm_hour ) + ":" + std::to_string( localt.tm_min ) + ":" + std::to_string( localt.tm_sec ) + "\r\n";
 			for ( auto& player : m_server->m_rooms[ roomNumber ].GetChatters() )
 			{
 				message = message + player->m_name + "	" + player->m_ip + ":" + std::to_string( player->m_port ) + "\r\n";

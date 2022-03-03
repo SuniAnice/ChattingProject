@@ -51,6 +51,7 @@ namespace str
 		const std::string PRINT_ROOMINFO_NAME = "이름 : ";
 		const std::string PRINT_ROOMINFO_CAPACITY = "	정원 : ";
 		const std::string PRINT_ROOMINFO_PLAYER = "참가자 : ";
+		const std::string PRINT_ROOMINFO_TIME = "개설 시각 : ";
 		const std::string PRINT_FAILROOMINFO = "방 정보 명령어 : p [방 번호] (해당 채팅방이 존재하지 않습니다)\r\n";
 
 		const std::string INVITE = "님을 채팅방으로 초대합니다.\r\n";

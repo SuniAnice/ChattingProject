@@ -3,6 +3,7 @@
 #include "ChattingRoom.h"
 #include "ChattingServer.h"
 #include "Session.h"
+#include <ctime>
 
 int ChattingServer::MakeRoom( const std::string& name, int max )
 {
@@ -12,6 +13,7 @@ int ChattingServer::MakeRoom( const std::string& name, int max )
 		{
 			m_rooms[ i ].SetName( name );
 			m_rooms[ i ].SetMaxPeople( max );
+			m_rooms[ i ].SetTime( time( NULL ) );
 			return i;
 		}
 	}
