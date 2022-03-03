@@ -3,12 +3,13 @@
 #include "ChattingScene.h"
 #include "LobbyScene.h"
 #include "Session.h"
+#include "StringTable.h"
 
 
 LobbyScene::LobbyScene( Session* p ) : Scene( p )
 {
 	// 로비 메시지 출력용
-	parent->ProcessCommand();
+	parent->SendChat( str::msg::DEFAULT_LOBBY );
 }
 
 bool LobbyScene::ExecutionInput()

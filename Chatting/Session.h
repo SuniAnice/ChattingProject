@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <queue>
 
 
 constexpr int	BUFFER_SIZE = 1024;
@@ -27,6 +28,7 @@ private:
 	char m_buffer[ BUFFER_SIZE + 1 ];
 	bool m_isProcessing;
 	int m_recvBytes;
+	std::queue < std::string > m_packets;
 	// 플레이어 정보
 	bool m_isNameSet;
 	int m_roomNumber;
