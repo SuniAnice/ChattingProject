@@ -28,6 +28,7 @@ int main()
 	serverAddress.sin_port = htons( SERVER_PORT );
 	serverAddress.sin_addr.S_un.S_addr = INADDR_ANY;
 	bind( listenSocket, reinterpret_cast< sockaddr* >( &serverAddress ), sizeof( serverAddress ) );
+	std::cout << "서버 포트 : "<< htons( serverAddress.sin_port ) << std::endl;
 	listen( listenSocket, SOMAXCONN );
 
 	u_long flagOn = 1;
@@ -67,8 +68,8 @@ int main()
 				// 컨테이너에 유저 소켓 등록
 				char buf[ 32 ];
 				auto ip = inet_ntop( AF_INET, &clientAddress.sin_addr, buf, sizeof(buf) );
-				std::cout << str::msg::CLIENT_LOGON << ip << ":" << clientAddress.sin_port << std::endl;
-				Session* info = new Session( clientSocket, ip, clientAddress.sin_port, server );
+				std::cout << str::msg::CLIENT_LOGON << ip << ":" << htons( clientAddress.sin_port ) << std::endl;
+				Session* info = new Session( clientSocket, ip, htons( clientAddress.sin_port ), server );
 				info->SetScene( std::make_unique< LoginScene >( info ) );
 				server.m_userSockets.push_back( info );
 			}
