@@ -37,8 +37,12 @@ void ANetworkManager::Tick(float DeltaTime)
 	Super::Tick( DeltaTime );
 	if ( Recv() != 0 )
 	{
+		// 멀티바이트에서 유니코드로 변환
 		std::string str = (char*)m_buffer;
 		std::wstring wstr = mbs_to_wcs( str );
+		// 마지막 \r\n 제거
+		wstr.pop_back();
+		wstr.pop_back();
 		PrintBuffer( wstr.c_str() );
 		InitializeBuffer();
 	}
