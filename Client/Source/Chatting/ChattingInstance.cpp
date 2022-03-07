@@ -9,6 +9,17 @@ constexpr int32 SERVER_PORT = 4000;
 
 UChattingInstance::UChattingInstance()
 {
+    
+}
+
+UChattingInstance::~UChattingInstance()
+{
+    m_serverSocket->Close();
+}
+
+void UChattingInstance::Init()
+{
+    Super::Init();
     m_serverSocket = ISocketSubsystem::Get( PLATFORM_SOCKETSUBSYSTEM )->CreateSocket( NAME_Stream, TEXT( "default" ), false );
 
     FString address = TEXT( "127.0.0.1" );
@@ -20,11 +31,6 @@ UChattingInstance::UChattingInstance()
     addr->SetIp( ip.Value );
     addr->SetPort( SERVER_PORT );
 
-    m_serverSocket->Connect(*addr);
+    m_serverSocket->Connect( *addr );
     m_serverSocket->SetNonBlocking();
-}
-
-UChattingInstance::~UChattingInstance()
-{
-    m_serverSocket->Close();
 }

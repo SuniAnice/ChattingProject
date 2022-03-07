@@ -40,6 +40,7 @@ void ANetworkManager::Tick(float DeltaTime)
 		std::string str = (char*)m_buffer;
 		std::wstring wstr = mbs_to_wcs( str );
 		PrintBuffer( wstr.c_str() );
+		InitializeBuffer();
 	}
 }
 
@@ -55,4 +56,9 @@ int ANetworkManager::Recv()
 	int32 byte;
 	m_instance->m_serverSocket->Recv( m_buffer, BUFFER_SIZE, byte );
 	return byte;
+}
+
+void ANetworkManager::InitializeBuffer()
+{
+	memset( &m_buffer, 0, BUFFER_SIZE );
 }

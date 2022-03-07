@@ -40,4 +40,5 @@ public:
 	UFUNCTION( BlueprintImplementableEvent )
 	void PrintBuffer( const FString& str );
 
+	void InitializeBuffer();
 };

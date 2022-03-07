@@ -19,5 +19,7 @@ public:
 	UChattingInstance();
 	~UChattingInstance();
 
+	virtual void Init() override;
+
 	FSocket* m_serverSocket;
 };
