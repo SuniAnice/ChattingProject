@@ -7,10 +7,7 @@
 constexpr int32 SERVER_PORT = 4000;
 
 
-UChattingInstance::UChattingInstance()
-{
-    
-}
+UChattingInstance::UChattingInstance() {}
 
 UChattingInstance::~UChattingInstance()
 {
