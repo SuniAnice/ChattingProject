@@ -4,11 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
-#include <WS2tcpip.h>
+#include "Networking.h"
+#include "Sockets.h"
+#include "SocketSubsystem.h"
 #include "ChattingInstance.generated.h"
-
-
-#pragma comment( lib, "Ws2_32.lib" )
 
 
 UCLASS()
@@ -21,8 +20,5 @@ public:
 	~UChattingInstance();
 	virtual void Init() override;
 
-	WSADATA wsaData;
-	SOCKET serverSocket;
-	SOCKADDR_IN serverAddr;
-	FD_SET readSet, writeSet;
+	FSocket* serverSocket;
 };

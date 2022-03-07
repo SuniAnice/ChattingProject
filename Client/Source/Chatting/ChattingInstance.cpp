@@ -4,29 +4,28 @@
 #include "ChattingInstance.h"
 
 
-constexpr int SERVER_PORT = 4000;
+constexpr int32 SERVER_PORT = 4000;
 
 
 UChattingInstance::UChattingInstance()
 {
-    WSAStartup( MAKEWORD( 2, 2 ), &wsaData );
+    serverSocket = ISocketSubsystem::Get( PLATFORM_SOCKETSUBSYSTEM )->CreateSocket( NAME_Stream, TEXT( "default" ), false );
 
-    serverSocket = WSASocket( AF_INET, SOCK_STREAM, 0, NULL, 0, 0 );
+    FString address = TEXT( "127.0.0.1" );
+    int32 port = SERVER_PORT;
+    FIPv4Address ip;
+    FIPv4Address::Parse( address, ip );
 
-    memset( &serverAddr, 0, sizeof( SOCKADDR_IN ) );
-    serverAddr.sin_family = AF_INET;
-    inet_pton( AF_INET, "127.0.0.1", &serverAddr.sin_addr );
-    serverAddr.sin_port = htons( SERVER_PORT );
-    
-    int ret = WSAConnect( serverSocket, reinterpret_cast<sockaddr*>( &serverAddr ), sizeof( serverAddr ), 0, 0, 0, 0 );
+    TSharedRef<FInternetAddr> addr = ISocketSubsystem::Get( PLATFORM_SOCKETSUBSYSTEM )->CreateInternetAddr();
+    addr->SetIp( ip.Value );
+    addr->SetPort( SERVER_PORT );
 
-    u_long flagOn = 1;
-    ioctlsocket( serverSocket, FIONBIO, &flagOn );
+    serverSocket->Connect(*addr);
 }
 
 UChattingInstance::~UChattingInstance()
 {
-    closesocket( serverSocket );
+    serverSocket->Close();
 }
 
 void UChattingInstance::Init()
