@@ -21,9 +21,10 @@ UChattingInstance::UChattingInstance()
     addr->SetPort( SERVER_PORT );
 
     m_serverSocket->Connect(*addr);
+    m_serverSocket->SetNonBlocking();
 }
 
 UChattingInstance::~UChattingInstance()
 {
-    serverSocket->Close();
+    m_serverSocket->Close();
 }
