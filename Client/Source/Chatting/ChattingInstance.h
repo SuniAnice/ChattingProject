@@ -18,7 +18,6 @@ class CHATTING_API UChattingInstance : public UGameInstance
 public:
 	UChattingInstance();
 	~UChattingInstance();
-	virtual void Init() override;
 
-	FSocket* serverSocket;
+	FSocket* m_serverSocket;
 };
