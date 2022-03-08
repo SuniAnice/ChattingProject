@@ -35,30 +35,40 @@ void ANetworkManager::BeginPlay()
 void ANetworkManager::Tick(float DeltaTime)
 {
 	Super::Tick( DeltaTime );
-	if ( Recv() != 0 )
+	if ( !m_isServerOff )
 	{
-		// 멀티바이트에서 유니코드로 변환
-		std::string str = (char*)m_buffer;
-		std::wstring wstr = mbs_to_wcs( str );
-		// 마지막 \r\n 제거
-		wstr.pop_back();
-		wstr.pop_back();
-		PrintBuffer( wstr.c_str() );
-		InitializeBuffer();
+		if ( Recv() != 0 )
+		{
+			// 멀티바이트에서 유니코드로 변환
+			std::string str = (char*)m_buffer;
+			std::wstring wstr = mbs_to_wcs( str );
+			// 마지막 \r\n 제거
+			wstr.pop_back();
+			wstr.pop_back();
+			PrintBuffer( wstr.c_str() );
+			InitializeBuffer();
+		}
 	}
+	else
+	{
+		QuitClient();
+	}
+	
+
 }
 
 int ANetworkManager::Send( const void* buffer, int32 size )
 {
 	int32 byte;
-	m_instance->m_serverSocket->Send( ( uint8* )buffer, size, byte );
+	bool ret = m_instance->m_serverSocket->Send( ( uint8* )buffer, size, byte );
 	return byte;
 }
 
 int ANetworkManager::Recv()
 {
 	int32 byte;
-	m_instance->m_serverSocket->Recv( m_buffer, BUFFER_SIZE, byte );
+	bool ret = m_instance->m_serverSocket->Recv( m_buffer, BUFFER_SIZE, byte );
+	if ( !ret )		m_isServerOff = true;
 	return byte;
 }
 

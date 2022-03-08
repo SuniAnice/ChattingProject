@@ -25,6 +25,8 @@ public:
 
 	uint8 m_buffer[ BUFFER_SIZE ];
 
+	bool m_isServerOff = false;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -39,6 +41,9 @@ public:
 
 	UFUNCTION( BlueprintImplementableEvent )
 	void PrintBuffer( const FString& str );
+
+	UFUNCTION( BlueprintImplementableEvent )
+		void QuitClient();
 
 	void InitializeBuffer();
 };
