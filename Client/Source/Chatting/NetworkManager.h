@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "ChattingInstance.h"
+#include <string>
+#include <queue>
 #include "NetworkManager.generated.h"
 
 
@@ -23,9 +25,15 @@ public:
 	UPROPERTY( BlueprintReadWrite )
 	UChattingInstance* m_instance;
 
+protected:
+
 	uint8 m_buffer[ BUFFER_SIZE ];
 
 	bool m_isServerOff = false;
+
+	int m_recvBytes = 0;
+
+	std::queue<std::string> m_packets;
 
 protected:
 	// Called when the game starts or when spawned
@@ -41,6 +49,9 @@ public:
 
 	UFUNCTION( BlueprintImplementableEvent )
 	void PrintBuffer( const FString& str );
+
+	UFUNCTION( BlueprintImplementableEvent )
+		void PrintBuffers( const TArray<FString>& str );
 
 	UFUNCTION( BlueprintImplementableEvent )
 		void QuitClient();

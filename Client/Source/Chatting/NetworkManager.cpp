@@ -2,7 +2,6 @@
 
 
 #include "NetworkManager.h"
-#include <string>
 #include <locale.h>
 
 
@@ -37,17 +36,7 @@ void ANetworkManager::Tick(float DeltaTime)
 	Super::Tick( DeltaTime );
 	if ( !m_isServerOff )
 	{
-		if ( Recv() != 0 )
-		{
-			// 멀티바이트에서 유니코드로 변환
-			std::string str = (char*)m_buffer;
-			std::wstring wstr = mbs_to_wcs( str );
-			// 마지막 \r\n 제거
-			wstr.pop_back();
-			wstr.pop_back();
-			PrintBuffer( wstr.c_str() );
-			InitializeBuffer();
-		}
+		Recv();
 	}
 	else
 	{
@@ -67,12 +56,50 @@ int ANetworkManager::Send( const void* buffer, int32 size )
 int ANetworkManager::Recv()
 {
 	int32 byte;
-	bool ret = m_instance->m_serverSocket->Recv( m_buffer, BUFFER_SIZE, byte );
-	if ( !ret )		m_isServerOff = true;
+	bool ret = m_instance->m_serverSocket->Recv( m_buffer + m_recvBytes, BUFFER_SIZE - m_recvBytes, byte );
+	m_recvBytes += byte;
+	if ( !ret )
+	{
+		m_isServerOff = true;
+	}
+	else if ( byte != 0 )
+	{
+		std::string str = (char*)m_buffer;
+
+		char* prev = (char*)m_buffer;
+		char* ptr = strstr( prev, "\n" );
+
+		std::wstring wstr;
+
+		TArray < FString > arr;
+
+		// 엔터키가 입력되었을 경우
+		while ( ptr != NULL )
+		{
+			m_packets.push( str.substr( prev - (char*)m_buffer, ptr - prev + 1 ) );
+			prev = ptr + 1;
+			ptr = strstr( ptr + 1, "\n" );
+		}
+		while ( m_packets.size() != 0)
+		{
+			// 멀티바이트에서 유니코드로 변환
+			if ( m_packets.size() == 1 )
+			{
+				// 마지막 줄 줄나눔 제거
+				m_packets.front().pop_back();
+				m_packets.front().pop_back();
+			}
+			arr.Push( mbs_to_wcs( m_packets.front() ).c_str() );
+			m_packets.pop();
+		}
+		PrintBuffers( arr );
+		InitializeBuffer();
+	}
 	return byte;
 }
 
 void ANetworkManager::InitializeBuffer()
 {
 	memset( &m_buffer, 0, BUFFER_SIZE );
+	m_recvBytes = 0;
 }
