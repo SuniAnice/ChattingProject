@@ -5,7 +5,19 @@
 #include "Session.h"
 #include "StringTable.h"
 #include <sstream>
+#include <locale.h>
 
+
+std::wstring mbs_to_wcs( std::string str )
+{
+	const char* strs = str.c_str();
+	wchar_t wcs[ BUFFER_SIZE ] = { 0 };
+	mbstate_t shiftState = mbstate_t();
+	setlocale( LC_ALL, "" );
+	size_t ret;
+	mbsrtowcs_s( &ret, wcs, &strs, sizeof( wcs ), &shiftState );
+	return std::wstring( wcs );
+}
 
 Session::Session( SOCKET& sock, PCSTR& ip, USHORT port, ChattingServer& server ) : m_socket( sock ), m_ip( ip ), m_port( port ), m_recvBytes( 0 ), m_isProcessing( false ), m_isNameSet( false ), m_server( &server ), m_roomNumber( 0 ), m_enterTime( 0 )
 {
@@ -90,7 +102,11 @@ bool Session::SetName()
 	stream.str( m_buffer );
 	stream >> m_name;
 
-	if ( m_name.size() < 2 || m_name.size() > 8 )
+	// 유니코드로 길이 체크
+	std::wstring wstr;
+	wstr = mbs_to_wcs( m_name );
+
+	if ( wstr.size() < 2 || wstr.size() > 8 )
 	{
 		SendChat( str::msg::PLAYER_NICKNAMESIZEERROR );
 		InitializeBuffer();
@@ -226,8 +242,11 @@ bool Session::ProcessCommand()
 					return ( n == '\n' || n == '\r' );
 				}
 			), name.end() );
+			// 유니코드로 길이 체크
+			std::wstring wstr;
+			wstr = mbs_to_wcs( name );
 			// 방 제목 길이 체크
-			if ( name.size() <= 1 || name.size() > 20 )
+			if ( wstr.size() <= 1 || wstr.size() > 20 )
 			{
 				SendChat( str::msg::PLAYER_FAILMAKEROOM_NAME );
 				break;

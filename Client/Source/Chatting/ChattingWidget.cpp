@@ -12,13 +12,13 @@ std::string wcs_to_mbs( std::wstring wstr )
 	mbstate_t shiftState = mbstate_t();
 	setlocale(LC_ALL, "");
 	wcsrtombs( mbs, &str, sizeof( mbs ), &shiftState );
-	return std::string( mbs );
+	return std::string( mbs ) + "\r\n" ;
 }
 
 void UChattingWidget::SendChat( FString string )
 {
 	std::wstring wstr = *string;
 	std::string str = wcs_to_mbs( wstr );
-	str = str + "\r\n";
+//	str = str + "\r\n";
 	m_manager->Send( &str, str.size() );
 }
