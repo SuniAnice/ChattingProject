@@ -114,6 +114,27 @@ void ANetworkManager::ProcessPacket()
 				cprev = p + 2;
 				p = strstr( p + 2, "\r\n");
 			}
+			PrintUserList( tarr );
+			m_packets.pop();
+			continue;
+		}
+
+		// 방 목록의 경우
+		p = strstr( current.c_str(), "방 목록을 출력합니다.\r\n" );
+		if ( p != NULL )
+		{
+			// 줄 단위 파싱
+			TArray < FString > tarr;
+			// 첫 줄 무시
+			p = strstr( current.c_str(), "\r\n" );
+			cprev = p + 2;
+			p = strstr( cprev, "\r\n" );
+			while ( p != NULL )
+			{
+				tarr.Push( mbs_to_wcs( current.substr( cprev - current.c_str(), p - cprev ) ).c_str() );
+				cprev = p + 2;
+				p = strstr( p + 2, "\r\n" );
+			}
 			PrintRoomList( tarr );
 			m_packets.pop();
 			continue;

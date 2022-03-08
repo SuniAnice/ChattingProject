@@ -62,4 +62,7 @@ public:
 
 	UFUNCTION( BlueprintImplementableEvent )
 	void PrintRoomList( const TArray<FString>& str );
+
+	UFUNCTION( BlueprintImplementableEvent )
+		void PrintUserList( const TArray<FString>& str );
 };
