@@ -19,6 +19,5 @@ void UChattingWidget::SendChat( FString string )
 {
 	std::wstring wstr = *string;
 	std::string str = wcs_to_mbs( wstr );
-//	str = str + "\r\n";
-	m_manager->Send( &str, str.size() );
+	m_manager->Send( str.c_str(), str.size() );
 }
