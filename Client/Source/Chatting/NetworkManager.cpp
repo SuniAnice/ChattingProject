@@ -64,36 +64,7 @@ int ANetworkManager::Recv()
 	}
 	else if ( byte != 0 )
 	{
-		std::string str = (char*)m_buffer;
-
-		char* prev = (char*)m_buffer;
-		char* ptr = strstr( prev, "\n" );
-
-		std::wstring wstr;
-
-		TArray < FString > arr;
-
-		// 엔터키가 입력되었을 경우
-		while ( ptr != NULL )
-		{
-			m_packets.push( str.substr( prev - (char*)m_buffer, ptr - prev + 1 ) );
-			prev = ptr + 1;
-			ptr = strstr( ptr + 1, "\n" );
-		}
-		while ( m_packets.size() != 0)
-		{
-			// 멀티바이트에서 유니코드로 변환
-			if ( m_packets.size() == 1 )
-			{
-				// 마지막 줄 줄나눔 제거
-				m_packets.front().pop_back();
-				m_packets.front().pop_back();
-			}
-			arr.Push( mbs_to_wcs( m_packets.front() ).c_str() );
-			m_packets.pop();
-		}
-		PrintBuffers( arr );
-		InitializeBuffer();
+		ProcessPacket();
 	}
 	return byte;
 }
@@ -102,4 +73,60 @@ void ANetworkManager::InitializeBuffer()
 {
 	memset( &m_buffer, 0, BUFFER_SIZE );
 	m_recvBytes = 0;
+}
+
+void ANetworkManager::ProcessPacket()
+{
+	std::string str = (char*)m_buffer;
+
+	char* prev = (char*)m_buffer;
+	char* ptr = strstr( prev, "\n\r" );
+	while ( ptr != NULL )
+	{
+		m_packets.push( str.substr( prev - (char*)m_buffer, ptr - prev + 1 ) );
+		prev = ptr + 1;
+		ptr = strstr( ptr + 1, "\n\r" );
+	}
+
+	std::wstring wstr;
+
+	TArray < FString > arr;
+
+
+	while ( m_packets.size() != 0 )
+	{
+		std::string current = m_packets.front();
+		const char* cprev = current.c_str();
+
+		// 플레이어 목록의 경우
+		const char* p = strstr( current.c_str(), "접속중인 플레이어들을 출력합니다.\r\n" );
+		if ( p != NULL )
+		{
+			// 줄 단위 파싱
+			TArray < FString > tarr;
+			// 첫 줄 무시
+			p = strstr( current.c_str(), "\r\n" );
+			cprev = p + 2;
+			p = strstr( cprev, "\r\n" );
+			while ( p != NULL )
+			{
+				tarr.Push( mbs_to_wcs( current.substr( cprev - current.c_str(), p - cprev ) ).c_str() );
+				cprev = p + 2;
+				p = strstr( p + 2, "\r\n");
+			}
+			PrintRoomList( tarr );
+			m_packets.pop();
+			continue;
+		}
+
+		// 마지막 줄 줄나눔 제거
+		current.pop_back();
+		current.pop_back();
+		arr.Push( mbs_to_wcs( current ).c_str() );
+		m_packets.pop();
+	}
+
+	if ( arr.Num() != 0 )	PrintBuffers( arr );
+
+	InitializeBuffer();
 }

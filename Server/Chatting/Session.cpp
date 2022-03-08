@@ -169,7 +169,7 @@ int Session::Recv()
 
 int Session::SendChat( const std::string& message ) const
 {
-	int retVal = send( m_socket, message.c_str(), message.size(), 0 );
+	int retVal = send( m_socket, (message + '\r' ).c_str(), message.size() + 1, 0);
 	return retVal;
 }
 

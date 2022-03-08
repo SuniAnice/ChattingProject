@@ -57,4 +57,9 @@ public:
 		void QuitClient();
 
 	void InitializeBuffer();
+
+	void ProcessPacket();
+
+	UFUNCTION( BlueprintImplementableEvent )
+	void PrintRoomList( const TArray<FString>& str );
 };
