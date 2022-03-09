@@ -83,9 +83,9 @@ void ANetworkManager::ProcessPacket()
 	char* ptr = strstr( prev, "\n\r" );
 	while ( ptr != NULL )
 	{
-		m_packets.push( str.substr( prev - (char*)m_buffer, ptr - prev + 1 ) );
-		prev = ptr + 1;
-		ptr = strstr( ptr + 1, "\n\r" );
+		m_packets.push( str.substr( prev - (char*)m_buffer, ptr - prev + 2 ) );
+		prev = ptr + 2;
+		ptr = strstr( ptr + 2, "\n\r" );
 	}
 
 	std::wstring wstr;
@@ -140,9 +140,29 @@ void ANetworkManager::ProcessPacket()
 			continue;
 		}
 
+		// 방 입장의 경우
+		p = strstr( current.c_str(), "채팅방에 입장했습니다. :	" );
+		if ( p != NULL )
+		{
+			current.erase( current.size() - 3, 3 );
+			EnterRoom( mbs_to_wcs( current ).c_str() );
+			m_packets.pop();
+			continue;
+		}
+
+		// 방 퇴장의 경우
+		p = strstr( current.c_str(), "채팅방에서 나갔습니다.\r\n" );
+		if ( p != NULL )
+		{
+			ExitRoom();
+			current.erase( current.size() - 3, 3 );
+			arr.Push( mbs_to_wcs( current ).c_str() );
+			m_packets.pop();
+			continue;
+		}
+
 		// 마지막 줄 줄나눔 제거
-		current.pop_back();
-		current.pop_back();
+		current.erase( current.size() - 3, 3 );
 		arr.Push( mbs_to_wcs( current ).c_str() );
 		m_packets.pop();
 	}

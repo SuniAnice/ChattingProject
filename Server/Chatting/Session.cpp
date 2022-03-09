@@ -256,6 +256,8 @@ bool Session::ProcessCommand()
 			m_roomNumber = m_server->MakeRoom( name, max );
 			m_isInLobby = false;
 			// 채팅방 컨테이너에 자신을 넣고, 시스템 메시지 출력 후 장면 이동
+			std::string message = str::msg::PLAYER_JOINROOM + m_server->m_rooms[ m_roomNumber ].GetName() + "\r\n";
+			SendChat( message );
 			m_server->m_rooms[ m_roomNumber ].GetChatters().push_back( this );
 			m_server->SystemMessage( m_server->m_rooms[ m_roomNumber ].GetChatters(), m_name + str::msg::PLAYER_ENTERROOM );
 			m_currentScene->ChangeScene();
@@ -279,6 +281,8 @@ bool Session::ProcessCommand()
 				// 방 인원수가 가득 찼는지 체크
 				if ( m_server->m_rooms[ roomNum ].GetMaxPeople() > m_server->m_rooms[ roomNum ].GetChatters().size() )
 				{
+					std::string message = str::msg::PLAYER_JOINROOM + m_server->m_rooms[ roomNum ].GetName() + "\r\n";
+					SendChat( message );
 					// 채팅방 컨테이너에 자신을 넣고, 시스템 메시지 출력 후 장면 이동
 					m_roomNumber = roomNum;
 					m_isInLobby = false;
@@ -474,6 +478,7 @@ bool Session::ProcessCommand()
 				SendChat( str::errormsg::COMMAND );
 				break;
 			}
+			SendChat( str::msg::PLAYER_QUITROOM );
 			m_currentScene->ExitScene();
 		}
 		break;
