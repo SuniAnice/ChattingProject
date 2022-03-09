@@ -66,12 +66,12 @@ namespace str
 		const std::string WISPER_FROM = "님의 귓속말 : ";
 		const std::string WISPER_FAIL = "귓속말 명령어 : t [닉네임] [할 말] (해당 닉네임이 존재하지 않습니다)\r\n";
 
-		const std::string INFO_COMMAND = "----------------------------------------------------\r\n명령어 목록을 출력합니다.\r\n----------------------------------------------------\r\n";
+		const std::string INFO_COMMAND = "--------------------------------\r\n명령어 목록을 출력합니다.\r\n--------------------------------\r\n";
 		const std::string INFO_COMMAND_ROOM = "플레이어 목록 :		L\r\n플레이어 정보 :		i [닉네임]\r\n귓속말 :		t [닉네임] [할 말]\r\n초대 :			w [닉네임]\r\n방 목록 :		o\r\n방 정보 :		p [방 번호]\r\n방 나가기 :		q\r\n종료 :			x\r\n";
 		const std::string INFO_COMMAND_LOBBY = "방 만들기 :		a [인원수] [방제목]\r\n플레이어 목록 :		L\r\n플레이어 정보 :		i [닉네임]\r\n귓속말 :		t [닉네임] [할 말]\r\n방 목록 :		o\r\n방 정보 :		p [방 번호]\r\n방 입장 :		j\r\n종료 :			x\r\n";
 
 		const std::string DEFAULT_ROOM = "명령어 보기(h) 나가기(X)\r\n";
-		const std::string DEFAULT_LOBBY = "----------------------------------------------------\r\n로비에 오신 것을 환영합니다\r\n----------------------------------------------------\r\n명령어 보기(h) 나가기(X)\r\n";
+		const std::string DEFAULT_LOBBY = "--------------------------------\r\n로비에 오신 것을 환영합니다\r\n--------------------------------\r\n명령어 보기(h) 나가기(X)\r\n";
 
 	}
 

@@ -47,10 +47,23 @@ void ANetworkManager::Tick(float DeltaTime)
 
 }
 
-int ANetworkManager::Send( const void* buffer, int32 size )
+int ANetworkManager::Send( std::string& buffer, int32 size )
 {
 	int32 byte;
-	bool ret = m_instance->m_serverSocket->Send( ( uint8* )buffer, size, byte );
+	bool ret;
+	m_sends.push( buffer );
+	// 큐에 미전송 데이터가 있으면 전송
+	while ( m_sends.size() != 0 )
+	{
+		ret = m_instance->m_serverSocket->Send( ( uint8* )m_sends.front().c_str(), m_sends.front().size(), byte );
+		// 전송이 중간에 잘렸으면 큐에 잘린 부분을 넣고 다음에 마저 전송한다.
+		if ( byte != m_sends.front().size() )
+		{
+			m_sends.front() = m_sends.front().substr( byte );
+			return byte;
+		}
+		m_sends.pop();
+	}
 	return byte;
 }
 

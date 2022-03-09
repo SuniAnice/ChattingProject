@@ -167,9 +167,22 @@ int Session::Recv()
 	return retVal;
 }
 
-int Session::SendChat( const std::string& message ) const
+int Session::SendChat( const std::string& message )
 {
-	int retVal = send( m_socket, (message + '\r' ).c_str(), message.size() + 1, 0);
+	int retVal = 0;
+	m_senddata.push( message );
+	// 큐에 미전송 데이터가 있으면 전송
+	while ( m_senddata.size() != 0 )
+	{
+		retVal = send( m_socket, ( m_senddata.front() + '\r' ).c_str(), m_senddata.front().size() + 1, 0 );
+		// 전송이 중간에 잘렸으면 큐에 잘린 부분을 넣고 다음에 마저 전송한다.
+		if ( retVal != m_senddata.front().size() + 1 )
+		{
+			m_senddata.front() = m_senddata.front().substr( retVal );
+			return retVal;
+		}
+		m_senddata.pop();
+	}
 	return retVal;
 }
 

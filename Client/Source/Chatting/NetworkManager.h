@@ -35,6 +35,8 @@ protected:
 
 	std::queue<std::string> m_packets;
 
+	std::queue<std::string> m_sends;
+
 	std::string m_nickname;
 
 protected:
@@ -45,7 +47,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	int Send( const void* buffer, int32 size );
+	int Send( std::string& buffer, int32 size );
 
 	int Recv();
 

@@ -28,7 +28,11 @@ private:
 	char m_buffer[ BUFFER_SIZE + 1 ];
 	bool m_isProcessing;
 	int m_recvBytes;
+	// 처리해야 하는 수신한 패킷 데이터
 	std::queue < std::string > m_packets;
+	// 보내야 하는 데이터
+	std::queue < std::string > m_senddata;
+
 	// 플레이어 정보
 	bool m_isNameSet;
 	int m_roomNumber;
@@ -80,7 +84,7 @@ public:
 	int Recv();
 
 	// 해당 세션의 플레이어에게 메시지를 전송하는 함수
-	int SendChat( const std::string& message ) const;
+	int SendChat( const std::string& message );
 
 	// 해당 세션의 플레이어가 같은 컨테이너에 있는 플레이어들에게 메시지를 전송하는 함수
 	void BroadcastMessage();
