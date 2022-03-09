@@ -27,7 +27,7 @@ namespace str
 
 		const std::string PLAYER_ENTERLOGINSCENE = "안녕하세요. 채팅 서버에 오신 것을 환영합니다.\r\n사용하실 닉네임을 입력해주세요.\r\n";
 
-		const std::string PLAYER_USINGNICKNAME = "을 닉네임으로 사용합니다\r\n";
+		const std::string PLAYER_USINGNICKNAME = "을 닉네임으로 사용합니다.\r\n";
 		const std::string PLAYER_NICKNAMEEXIST = "중복된 닉네임이 존재합니다\r\n";
 		const std::string PLAYER_NICKNAMESIZEERROR = "닉네임은 2글자 이상, 8글자 이하로 해주세요.\r\n";
 

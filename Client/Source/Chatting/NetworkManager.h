@@ -35,6 +35,8 @@ protected:
 
 	std::queue<std::string> m_packets;
 
+	std::string m_nickname;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -48,10 +50,10 @@ public:
 	int Recv();
 
 	UFUNCTION( BlueprintImplementableEvent )
-	void PrintBuffer( const FString& str );
+		void PrintBuffers( const TArray<FString>& str );
 
 	UFUNCTION( BlueprintImplementableEvent )
-		void PrintBuffers( const TArray<FString>& str );
+		void PrintMyChat( const FString& str );
 
 	UFUNCTION( BlueprintImplementableEvent )
 		void QuitClient();
@@ -71,4 +73,7 @@ public:
 
 	UFUNCTION( BlueprintImplementableEvent )
 		void ExitRoom();
+
+	UFUNCTION( BlueprintImplementableEvent )
+		void LoginSuccess( const FString& name );
 };

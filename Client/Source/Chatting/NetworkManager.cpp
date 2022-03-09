@@ -162,6 +162,44 @@ void ANetworkManager::ProcessPacket()
 			continue;
 		}
 
+		// 닉네임 생성의 경우
+		p = strstr( current.c_str(), "을 닉네임으로 사용합니다.\r\n" );
+		if ( p != NULL )
+		{
+			// 닉네임을 잘라서 함수에 전달
+			m_nickname = current.substr( 0, p - current.c_str() );
+			LoginSuccess( std::move( mbs_to_wcs( m_nickname ).c_str() ) );
+			current.erase( current.size() - 3, 3 );
+			arr.Push( std::move( mbs_to_wcs( current ).c_str() ) );
+			m_packets.pop();
+			continue;
+		}
+
+		// 닉네임이 이미 생성되었고, 수신한 메시지가 내가 말하는 메시지일 경우
+		if ( m_nickname.size() != 0 )
+		{
+			// 나의 채팅이면
+			p = strstr( current.c_str(), ( m_nickname + " : " ).c_str() );
+			if ( p != NULL )
+			{
+				// 앞의 닉네임부 제거
+				std::string temp = current.substr( m_nickname.size() + 3, current.size() - ( m_nickname.size() + 3 ) );
+				temp.erase( temp.size() - 3, 3 );
+				PrintMyChat( std::move( mbs_to_wcs( temp ).c_str() ) );
+				m_packets.pop();
+				continue;
+			}
+			// 나의 귓속말이면
+			p = strstr( current.c_str(), "님에게 귓속말 : " );
+			if ( p != NULL )
+			{
+				current.erase( current.size() - 3, 3 );
+				PrintMyChat( std::move( mbs_to_wcs( current ).c_str() ) );
+				m_packets.pop();
+				continue;
+			}
+		}
+
 		// 마지막 줄 줄나눔 제거
 		current.erase( current.size() - 3, 3 );
 		arr.Push( std::move( mbs_to_wcs( current ).c_str() ) );
