@@ -235,7 +235,7 @@ bool Session::ProcessCommand()
 				SendChat( str::msg::PLAYER_FAILMAKEROOM_NAME );
 				break;
 			}
-			name = name + buf.substr( cur );
+			name = name + " " + buf.substr(cur);
 			name.erase( std::remove_if( name.begin(), name.end(),
 				[]( char n )
 				{

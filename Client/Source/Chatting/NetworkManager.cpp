@@ -183,7 +183,7 @@ void ANetworkManager::ProcessPacket()
 			if ( p != NULL )
 			{
 				// 앞의 닉네임부 제거
-				std::string temp = current.substr( m_nickname.size() + 3, current.size() - ( m_nickname.size() + 3 ) );
+				std::string temp = current.substr( m_nickname.size() + 3 );
 				temp.erase( temp.size() - 3, 3 );
 				PrintMyChat( std::move( mbs_to_wcs( temp ).c_str() ) );
 				m_packets.pop();
