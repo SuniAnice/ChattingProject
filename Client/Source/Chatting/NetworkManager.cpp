@@ -78,7 +78,7 @@ void ANetworkManager::InitializeBuffer()
 void ANetworkManager::ProcessPacket()
 {
 	std::string str = (char*)m_buffer;
-
+	// ÆÐÅ¶ ÂÉ°³±â
 	char* prev = (char*)m_buffer;
 	char* ptr = strstr( prev, "\n\r" );
 	while ( ptr != NULL )
