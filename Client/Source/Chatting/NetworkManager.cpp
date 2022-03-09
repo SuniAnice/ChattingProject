@@ -12,7 +12,8 @@ std::wstring mbs_to_wcs( std::string str )
 	mbstate_t shiftState = mbstate_t();
 	setlocale( LC_ALL, "" );
 	mbsrtowcs( wcs, &strs, sizeof( wcs ), &shiftState );
-	return std::wstring( wcs );
+	std::wstring ret( wcs );
+	return ret;
 }
 
 // Sets default values
@@ -110,7 +111,7 @@ void ANetworkManager::ProcessPacket()
 			p = strstr( cprev, "\r\n" );
 			while ( p != NULL )
 			{
-				tarr.Push( mbs_to_wcs( current.substr( cprev - current.c_str(), p - cprev ) ).c_str() );
+				tarr.Push( std::move( mbs_to_wcs( current.substr( cprev - current.c_str(), p - cprev ) ) ).c_str() );
 				cprev = p + 2;
 				p = strstr( p + 2, "\r\n");
 			}
@@ -131,7 +132,7 @@ void ANetworkManager::ProcessPacket()
 			p = strstr( cprev, "\r\n" );
 			while ( p != NULL )
 			{
-				tarr.Push( mbs_to_wcs( current.substr( cprev - current.c_str(), p - cprev ) ).c_str() );
+				tarr.Push( std::move( mbs_to_wcs( current.substr( cprev - current.c_str(), p - cprev ) ) ).c_str() );
 				cprev = p + 2;
 				p = strstr( p + 2, "\r\n" );
 			}
@@ -145,7 +146,7 @@ void ANetworkManager::ProcessPacket()
 		if ( p != NULL )
 		{
 			current.erase( current.size() - 3, 3 );
-			EnterRoom( mbs_to_wcs( current ).c_str() );
+			EnterRoom( std::move( mbs_to_wcs( current ).c_str() ) );
 			m_packets.pop();
 			continue;
 		}
@@ -156,14 +157,14 @@ void ANetworkManager::ProcessPacket()
 		{
 			ExitRoom();
 			current.erase( current.size() - 3, 3 );
-			arr.Push( mbs_to_wcs( current ).c_str() );
+			arr.Push( std::move( mbs_to_wcs( current ).c_str() ) );
 			m_packets.pop();
 			continue;
 		}
 
 		// 마지막 줄 줄나눔 제거
 		current.erase( current.size() - 3, 3 );
-		arr.Push( mbs_to_wcs( current ).c_str() );
+		arr.Push( std::move( mbs_to_wcs( current ).c_str() ) );
 		m_packets.pop();
 	}
 
