@@ -24,7 +24,7 @@ public:
 
 protected:
 
-	bool m_isServerOff = false;
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -46,8 +46,6 @@ public:
 
 	UFUNCTION( BlueprintImplementableEvent )
 		void QuitClient();
-
-	void InitializeBuffer();
 
 	void ProcessPacket();
 

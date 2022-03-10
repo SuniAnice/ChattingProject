@@ -26,6 +26,8 @@ public:
 
 	virtual void Init() override;
 
+	bool m_isServerOff = false;
+
 	FSocket* m_serverSocket;
 
 	int m_recvBytes = 0;
@@ -40,5 +42,11 @@ public:
 	std::string m_leftovers;
 
 	uint8 m_buffer[ BUFFER_SIZE ];
+
+	int Send( std::string& buffer, int32 size );
+
+	int Recv();
+
+	void InitializeBuffer();
 
 };

@@ -35,7 +35,7 @@ void ANetworkManager::BeginPlay()
 void ANetworkManager::Tick(float DeltaTime)
 {
 	Super::Tick( DeltaTime );
-	if ( !m_isServerOff )
+	if ( !m_instance->m_isServerOff )
 	{
 		Recv();
 	}
@@ -47,74 +47,21 @@ void ANetworkManager::Tick(float DeltaTime)
 
 }
 
-int ANetworkManager::Send( std::string& buffer, int32 size )
-{
-	int32 byte;
-	bool ret;
-	m_instance->m_sends.push( buffer );
-	// 큐에 미전송 데이터가 있으면 전송
-	while ( m_instance->m_sends.size() != 0 )
-	{
-		ret = m_instance->m_serverSocket->Send( ( uint8* )m_instance->m_sends.front().c_str(), m_instance->m_sends.front().size(), byte );
-		// 전송이 중간에 잘렸으면 큐에 잘린 부분을 넣고 다음에 마저 전송한다.
-		if ( byte != m_instance->m_sends.front().size() )
-		{
-			m_instance->m_sends.front() = m_instance->m_sends.front().substr( byte );
-			return byte;
-		}
-		m_instance->m_sends.pop();
-	}
-	return byte;
-}
-
 int ANetworkManager::Recv()
 {
 	int32 byte;
-	// 남은 덩어리가 있다면 버퍼에 붙임
-	if ( m_instance->m_leftovers.size() != 0 )
-	{
-		memcpy_s( m_instance->m_buffer, BUFFER_SIZE, m_instance->m_leftovers.c_str(), m_instance->m_leftovers.size() );
-		m_instance->m_recvBytes += m_instance->m_leftovers.size();
-		m_instance->m_leftovers.clear();
-	}
-	bool ret = m_instance->m_serverSocket->Recv( m_instance->m_buffer + m_instance->m_recvBytes, BUFFER_SIZE - m_instance->m_recvBytes, byte );
-	m_instance->m_recvBytes += byte;
-	if ( !ret )
-	{
-		m_isServerOff = true;
-	}
-	else if ( byte != 0 )
+	byte = m_instance->Recv();
+	if ( byte != 0 )
 	{
 		ProcessPacket();
 	}
 	return byte;
 }
 
-void ANetworkManager::InitializeBuffer()
-{
-	memset( &m_instance->m_buffer, 0, BUFFER_SIZE );
-	m_instance->m_recvBytes = 0;
-}
-
 void ANetworkManager::ProcessPacket() 
 {
-	std::string str = (char*)m_instance->m_buffer;
-	// 패킷 쪼개기
-	char* prev = (char*)m_instance->m_buffer;
-	char* ptr = strstr( prev, "\n\r" );
-	while ( ptr != NULL )
-	{
-		m_instance->m_packets.push( str.substr( prev - ( char* )m_instance->m_buffer, ptr - prev + 2 ) );
-		prev = ptr + 2;
-		ptr = strstr( ptr + 2, "\n\r" );
-	}
-	// 처리하고 남은 덩어리 저장
-	m_instance->m_leftovers = str.substr( prev - ( char* )m_instance->m_buffer );
-
 	std::wstring wstr;
-
 	TArray < FString > arr;
-
 
 	while ( m_instance->m_packets.size() != 0 )
 	{
@@ -230,5 +177,5 @@ void ANetworkManager::ProcessPacket()
 
 	if ( arr.Num() != 0 )	PrintBuffers( arr );
 
-	InitializeBuffer();
+	m_instance->InitializeBuffer();
 }
