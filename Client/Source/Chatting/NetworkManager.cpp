@@ -2,6 +2,7 @@
 
 
 #include "NetworkManager.h"
+#include "StringTable.h"
 #include <locale.h>
 
 
@@ -67,8 +68,9 @@ void ANetworkManager::ProcessPacket()
 		std::string current = m_instance->m_packets.front();
 		const char* cprev = current.c_str();
 
+		auto st = str::msg::PLAYER_ENTERLOGINSCENE;
 		// 플레이어 목록의 경우
-		const char* p = strstr( current.c_str(), "접속중인 플레이어들을 출력합니다.\r\n" );
+		const char* p = strstr( current.c_str(), str::msg::PRINT_PLAYERLIST.c_str() );
 		if ( p != NULL )
 		{
 			// 줄 단위 파싱
@@ -89,7 +91,7 @@ void ANetworkManager::ProcessPacket()
 		}
 
 		// 방 목록의 경우
-		p = strstr( current.c_str(), "방 목록을 출력합니다.\r\n" );
+		p = strstr( current.c_str(), str::msg::PRINT_ROOMLIST.c_str() );
 		if ( p != NULL )
 		{
 			// 줄 단위 파싱
@@ -110,7 +112,7 @@ void ANetworkManager::ProcessPacket()
 		}
 
 		// 방 입장의 경우
-		p = strstr( current.c_str(), "채팅방에 입장했습니다. :	" );
+		p = strstr( current.c_str(), str::msg::PLAYER_JOINROOM.c_str() );
 		if ( p != NULL )
 		{
 			current.erase( current.size() - 3, 3 );
@@ -120,7 +122,7 @@ void ANetworkManager::ProcessPacket()
 		}
 
 		// 방 퇴장의 경우
-		p = strstr( current.c_str(), "채팅방에서 나갔습니다.\r\n" );
+		p = strstr( current.c_str(), str::msg::PLAYER_QUITROOM.c_str() );
 		if ( p != NULL )
 		{
 			ExitRoom();
@@ -131,7 +133,7 @@ void ANetworkManager::ProcessPacket()
 		}
 
 		// 닉네임 생성의 경우
-		p = strstr( current.c_str(), "을 닉네임으로 사용합니다.\r\n" );
+		p = strstr( current.c_str(), str::msg::PLAYER_USINGNICKNAME.c_str() );
 		if ( p != NULL )
 		{
 			// 닉네임을 잘라서 함수에 전달
@@ -142,10 +144,9 @@ void ANetworkManager::ProcessPacket()
 			m_instance->m_packets.pop();
 			continue;
 		}
-
 		// 초대의 경우
-		p = strstr( current.c_str(), "님께서 " );
-		const char* pt = strstr( current.c_str(), "번 채팅방으로 초대하셨습니다.\r\n" );
+		p = strstr( current.c_str(), str::msg::INVITE_FROM.c_str() );
+		const char* pt = strstr( current.c_str(), str::msg::INVITE_TO.c_str() );
 		if ( p != NULL && pt != NULL )
 		{
 			// 닉네임부 자르기
@@ -172,7 +173,7 @@ void ANetworkManager::ProcessPacket()
 				continue;
 			}
 			// 나의 귓속말이면
-			p = strstr( current.c_str(), "님에게 귓속말 : " );
+			p = strstr( current.c_str(), str::msg::WISPER_TO.c_str() );
 			if ( p != NULL )
 			{
 				current.erase( current.size() - 3, 3 );
