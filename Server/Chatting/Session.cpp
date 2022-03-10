@@ -164,10 +164,11 @@ int Session::Recv()
 	// 엔터키가 입력되었을 경우
 	while ( ptr != NULL )
 	{
-		m_packets.push( tmp.substr( prev - m_buffer, ptr - prev + 1 ) );
+		auto packet = tmp.substr( prev - m_buffer, ptr - prev + 1 );
+		m_packets.push( packet );
 		prev = ptr + 1;
 		ptr = strstr( ptr + 1, "\n" );
-		std::cout << "Data received from " << m_ip << ":"  << m_port << " - " << m_buffer << std::endl;
+		std::cout << "Data received from " << m_ip << ":"  << m_port << " - " << packet << std::endl;
 		m_isProcessing = true;
 	}
 	// 남은 데이터 임시 저장
