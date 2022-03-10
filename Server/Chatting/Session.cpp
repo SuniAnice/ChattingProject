@@ -564,7 +564,11 @@ void Session::InitializeBuffer()
 	m_isProcessing = false;
 	ZeroMemory( m_buffer, BUFFER_SIZE + 1 );
 	// 남은 데이터를 버퍼에 복사
-	memcpy_s( m_buffer, BUFFER_SIZE, m_leftovers.c_str(), m_leftovers.size() );
 	m_recvBytes = m_leftovers.size();
+	if ( m_leftovers.size() != 0 )
+	{
+		memcpy_s( m_buffer, BUFFER_SIZE, m_leftovers.c_str(), m_leftovers.size() );
+		m_leftovers.clear();
+	}
 	return;
 }
