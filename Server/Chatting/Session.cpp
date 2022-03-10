@@ -19,7 +19,9 @@ std::wstring mbs_to_wcs( std::string str )
 	return std::wstring( wcs );
 }
 
-Session::Session( SOCKET& sock, PCSTR& ip, USHORT port, ChattingServer& server ) : m_socket( sock ), m_ip( ip ), m_port( port ), m_recvBytes( 0 ), m_isProcessing( false ), m_isNameSet( false ), m_server( &server ), m_roomNumber( 0 ), m_enterTime( 0 )
+Session::Session( SOCKET& sock, PCSTR& ip, USHORT port, ChattingServer& server ) : 
+	m_socket( sock ), m_ip( ip ), m_port( port ), m_recvBytes( 0 ), m_isProcessing( false ),
+	m_isNameSet( false ), m_server( &server ), m_roomNumber( 0 ), m_enterTime( 0 )
 {
 	ZeroMemory( m_buffer, BUFFER_SIZE + 1 );
 }
@@ -380,8 +382,14 @@ bool Session::ProcessCommand()
 				message = message + str::msg::PRINT_PLAYERINFO_NAME + player + str::msg::PRINT_PLAYERINFO_IP +
 					m_server->m_userNames[ player ]->m_ip + str::msg::PRINT_PLAYERINFO_LOCATION;
 				// 로비에 있는지 판단
-				if ( m_server->m_userNames[ player ]->m_roomNumber == 0 )	message = message + str::msg::PRINT_PLAYERINFO_LOBBY;
-				else message = message + std::to_string( m_server->m_userNames[ player ]->m_roomNumber ) + str::msg::PRINT_PLAYERINFO_ROOM;
+				if ( m_server->m_userNames[ player ]->m_roomNumber == 0 )
+				{
+					message = message + str::msg::PRINT_PLAYERINFO_LOBBY;
+				}
+				else 
+				{ 
+					message = message + std::to_string( m_server->m_userNames[ player ]->m_roomNumber ) + str::msg::PRINT_PLAYERINFO_ROOM; 
+				}
 
 				SendChat( message );
 			}
@@ -403,6 +411,7 @@ bool Session::ProcessCommand()
 				std::string message = str::msg::PRINT_ROOMINFO;
 				message = message + str::msg::PRINT_ROOMINFO_NAME + m_server->m_rooms[ roomNumber ].GetName() 
 					+ str::msg::PRINT_ROOMINFO_CAPACITY + std::to_string( m_server->m_rooms[ roomNumber ].GetMaxPeople() ) + "\r\n";
+
 				auto time = m_server->m_rooms[ roomNumber ].GetTime();
 				struct tm localt;
 				localtime_s( &localt, &time );
