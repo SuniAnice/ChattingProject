@@ -115,8 +115,9 @@ void ANetworkManager::ProcessPacket()
 		p = strstr( current.c_str(), str::msg::PLAYER_JOINROOM.c_str() );
 		if ( p != NULL )
 		{
+			int num = stoi( current.substr( 0, p - current.c_str() ) );
 			current.erase( current.size() - 3, 3 );
-			EnterRoom( std::move( mbs_to_wcs( current ).c_str() ) );
+			EnterRoom( num, std::move( mbs_to_wcs( current ).c_str() ) );
 			m_instance->m_packets.pop();
 			continue;
 		}

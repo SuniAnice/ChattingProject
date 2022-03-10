@@ -50,7 +50,7 @@ public:
 		void PrintUserList( const TArray<FString>& str );
 
 	UFUNCTION( BlueprintImplementableEvent )
-		void EnterRoom( const FString& str );
+		void EnterRoom( int roomnum, const FString& str );
 
 	UFUNCTION( BlueprintImplementableEvent )
 		void ExitRoom();

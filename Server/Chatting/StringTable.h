@@ -37,7 +37,7 @@ namespace str
 
 		const std::string PLAYER_ROOMISFULL = "방이 가득 찼습니다.\r\n";
 		const std::string PLAYER_FAILENTERROOM = "방 입장 명령어 : j [방 번호] (방 입장에 실패했습니다.)\r\n";
-		const std::string PLAYER_JOINROOM = "채팅방에 입장했습니다. :	";
+		const std::string PLAYER_JOINROOM = "번 채팅방에 입장했습니다. :	";
 		const std::string PLAYER_QUITROOM = "채팅방에서 나갔습니다.\r\n";
 
 		const std::string PRINT_ROOMLIST = "방 목록을 출력합니다.\r\n";
