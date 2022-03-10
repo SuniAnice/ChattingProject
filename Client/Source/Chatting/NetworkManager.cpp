@@ -70,6 +70,13 @@ int ANetworkManager::Send( std::string& buffer, int32 size )
 int ANetworkManager::Recv()
 {
 	int32 byte;
+	// 남은 덩어리가 있다면 버퍼에 붙임
+	if ( m_leftovers.size() != 0 )
+	{
+		memcpy_s( m_buffer, BUFFER_SIZE, m_leftovers.c_str(), m_leftovers.size() );
+		m_recvBytes += m_leftovers.size();
+		m_leftovers.clear();
+	}
 	bool ret = m_instance->m_serverSocket->Recv( m_buffer + m_recvBytes, BUFFER_SIZE - m_recvBytes, byte );
 	m_recvBytes += byte;
 	if ( !ret )
@@ -89,7 +96,7 @@ void ANetworkManager::InitializeBuffer()
 	m_recvBytes = 0;
 }
 
-void ANetworkManager::ProcessPacket()
+void ANetworkManager::ProcessPacket() 
 {
 	std::string str = (char*)m_buffer;
 	// 패킷 쪼개기
@@ -101,6 +108,8 @@ void ANetworkManager::ProcessPacket()
 		prev = ptr + 2;
 		ptr = strstr( ptr + 2, "\n\r" );
 	}
+	// 처리하고 남은 덩어리 저장
+	m_leftovers = str.substr( prev - (char*)m_buffer );
 
 	std::wstring wstr;
 

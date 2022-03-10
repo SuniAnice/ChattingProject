@@ -39,6 +39,9 @@ protected:
 
 	std::string m_nickname;
 
+	// recv시 처리하고 남은 패킷 덩어리
+	std::string m_leftovers;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
