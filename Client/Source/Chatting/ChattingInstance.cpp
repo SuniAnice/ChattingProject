@@ -9,10 +9,7 @@ constexpr int32 SERVER_PORT = 4000;
 
 UChattingInstance::UChattingInstance() {}
 
-UChattingInstance::~UChattingInstance()
-{
-    m_serverSocket->Close();
-}
+UChattingInstance::~UChattingInstance() {}
 
 void UChattingInstance::Init()
 {
@@ -30,6 +27,12 @@ void UChattingInstance::Init()
 
     m_serverSocket->Connect( *addr );
     m_serverSocket->SetNonBlocking();
+}
+
+void UChattingInstance::Shutdown()
+{
+	Super::Shutdown();
+	m_serverSocket->Close();
 }
 
 int UChattingInstance::Send( std::string& buffer, int32 size )

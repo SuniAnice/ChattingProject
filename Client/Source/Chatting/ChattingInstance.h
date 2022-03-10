@@ -26,6 +26,8 @@ public:
 
 	virtual void Init() override;
 
+	virtual void Shutdown() override;
+
 	bool m_isServerOff = false;
 
 	FSocket* m_serverSocket;
