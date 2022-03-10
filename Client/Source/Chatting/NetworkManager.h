@@ -57,4 +57,7 @@ public:
 
 	UFUNCTION( BlueprintImplementableEvent )
 		void LoginSuccess( const FString& name );
+
+	UFUNCTION( BlueprintImplementableEvent )
+		void RecvInvite( const FString& name, int32 roomnum );
 };

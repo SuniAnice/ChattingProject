@@ -143,6 +143,20 @@ void ANetworkManager::ProcessPacket()
 			continue;
 		}
 
+		// 초대의 경우
+		p = strstr( current.c_str(), "님께서 " );
+		const char* pt = strstr( current.c_str(), "번 채팅방으로 초대하셨습니다.\r\n" );
+		if ( p != NULL && pt != NULL )
+		{
+			// 닉네임부 자르기
+			auto s1 = current.substr( 0, p - current.c_str() );
+			// 방번호 자르기
+			auto s2 = current.substr( p - current.c_str() + 7, pt - p - 7 );
+			RecvInvite( mbs_to_wcs( s1 ).c_str(), std::stoi( s2 ) );
+			m_instance->m_packets.pop();
+			continue;
+		}
+
 		// 닉네임이 이미 생성되었고, 수신한 메시지가 내가 말하는 메시지일 경우
 		if ( m_instance->m_nickname.size() != 0 )
 		{
