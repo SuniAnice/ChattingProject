@@ -167,9 +167,11 @@ int Session::Recv()
 		m_packets.push( tmp.substr( prev - m_buffer, ptr - prev + 1 ) );
 		prev = ptr + 1;
 		ptr = strstr( ptr + 1, "\n" );
-		std::cout << "Data received from " << m_ip << " : "  << m_port << " - " << m_buffer << std::endl;
+		std::cout << "Data received from " << m_ip << ":"  << m_port << " - " << m_buffer << std::endl;
 		m_isProcessing = true;
 	}
+	// 남은 데이터 임시 저장
+	m_leftovers = tmp.substr( prev - m_buffer );
 
 	
 	// 백스페이스가 입력되었을 경우
@@ -558,8 +560,10 @@ bool Session::ProcessCommand()
 
 void Session::InitializeBuffer()
 {
-	m_recvBytes = 0;
 	m_isProcessing = false;
 	ZeroMemory( m_buffer, BUFFER_SIZE + 1 );
+	// 남은 데이터를 버퍼에 복사
+	memcpy_s( m_buffer, BUFFER_SIZE, m_leftovers.c_str(), m_leftovers.size() );
+	m_recvBytes = m_leftovers.size();
 	return;
 }

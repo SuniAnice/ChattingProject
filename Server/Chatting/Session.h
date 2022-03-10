@@ -33,6 +33,8 @@ private:
 	// 보내야 하는 데이터
 	std::queue < std::string > m_senddata;
 
+	std::string m_leftovers;
+
 	// 플레이어 정보
 	bool m_isNameSet;
 	int m_roomNumber;
