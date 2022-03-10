@@ -61,8 +61,6 @@ public:
 
 	ChattingServer* GetServer();
 
-	std::unique_ptr< Scene >& GetCurrentScene();
-
 	bool InInLobby() const;
 
 	std::string& GetName();
@@ -72,13 +70,19 @@ public:
 	//Setter 함수들
 	void SetRoomNumber( int number );
 
-	void SetScene( std::unique_ptr< Scene > scene );
-
 	void SetIsInLobby( bool isInLobby );
 
 	bool SetName();
 
 	void SetTime( time_t time );
+
+	bool ExecutionInput();
+
+	void ChangeToLoginScene();
+
+	void ChangeToLobbyScene();
+
+	void ChangeToChattingScene();
 
 	// 데이터 수신 함수
 	int Recv();

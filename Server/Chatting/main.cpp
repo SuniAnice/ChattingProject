@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
 				auto ip = inet_ntop( AF_INET, &clientAddress.sin_addr, buf, sizeof(buf) );
 				std::cout << str::msg::CLIENT_LOGON << ip << ":" << htons( clientAddress.sin_port ) << std::endl;
 				Session* info = new Session( clientSocket, ip, htons( clientAddress.sin_port ), server );
-				info->SetScene( std::make_unique< LoginScene >( info ) );
+				info->ChangeToLoginScene();
 				server.m_userSockets.push_back( info );
 			}
 		}
@@ -116,7 +116,7 @@ int main(int argc, char* argv[])
 			if ( FD_ISSET( session->GetSocket(), &writeSet ) )
 			{
 				// 현재 Scene에 맞는 입력 처리 -> false인 경우에는 플레이어 접속 종료
-				if ( !session->GetCurrentScene()->ExecutionInput() )
+				if ( !session->ExecutionInput() )
 				{
 					// 컨테이너에서 유저 소켓 삭제
 					std::cout << str::msg::CLIENT_LOGOUT << session->GetIp() << std::endl;

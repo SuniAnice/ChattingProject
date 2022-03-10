@@ -26,5 +26,5 @@ bool LoginScene::ExecutionInput()
 void LoginScene::ChangeScene()
 {
 	// 로그인에 성공하면 로비로 씬 전환
-	parent->SetScene( std::make_unique< LobbyScene >( parent ) );
+	parent->ChangeToLobbyScene();
 }

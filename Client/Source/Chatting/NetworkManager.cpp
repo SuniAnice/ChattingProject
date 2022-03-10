@@ -44,8 +44,6 @@ void ANetworkManager::Tick(float DeltaTime)
 	{
 		QuitClient();
 	}
-	
-	
 }
 
 int ANetworkManager::DoRecv()

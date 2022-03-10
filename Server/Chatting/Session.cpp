@@ -1,6 +1,9 @@
 
 
 #include "ChattingServer.h"
+#include "ChattingScene.h"
+#include "LoginScene.h"
+#include "LobbyScene.h"
 #include "Scene.h"
 #include "Session.h"
 #include "StringTable.h"
@@ -61,11 +64,6 @@ ChattingServer* Session::GetServer()
 	return m_server;
 }
 
-std::unique_ptr< Scene >& Session::GetCurrentScene()
-{
-	return m_currentScene;
-}
-
 bool Session::InInLobby() const
 {
 	return m_isInLobby;
@@ -86,12 +84,6 @@ void Session::SetRoomNumber( int number )
 {
 	m_roomNumber = number;
 }
-
-void Session::SetScene( std::unique_ptr< Scene > scene )
-{
-	m_currentScene = std::move( scene );
-}
-
 void Session::SetIsInLobby( bool isInLobby )
 {
 	m_isInLobby = isInLobby;
@@ -138,6 +130,25 @@ void Session::SetTime( time_t time )
 	m_enterTime = time;
 }
 
+bool Session::ExecutionInput()
+{
+	return m_currentScene->ExecutionInput();
+}
+
+void Session::ChangeToLoginScene()
+{
+	m_currentScene = std::make_unique< LoginScene >( this );
+}
+
+void Session::ChangeToLobbyScene()
+{
+	m_currentScene = std::make_unique< LobbyScene >( this );
+}
+
+void Session::ChangeToChattingScene()
+{
+	m_currentScene = std::make_unique< ChattingScene >( this );
+}
 
 int Session::Recv()
 {
