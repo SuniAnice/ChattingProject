@@ -23,10 +23,6 @@ public:
 	UChattingInstance* m_instance;
 
 protected:
-
-
-
-protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -34,9 +30,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	int Send( std::string& buffer, int32 size );
+	int DoRecv();
 
-	int Recv();
+	void ProcessPacket();
 
 	UFUNCTION( BlueprintImplementableEvent )
 		void PrintBuffers( const TArray<FString>& str );
@@ -46,8 +42,6 @@ public:
 
 	UFUNCTION( BlueprintImplementableEvent )
 		void QuitClient();
-
-	void ProcessPacket();
 
 	UFUNCTION( BlueprintImplementableEvent )
 	void PrintRoomList( const TArray<FString>& str );

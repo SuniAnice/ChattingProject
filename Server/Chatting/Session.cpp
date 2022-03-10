@@ -350,7 +350,8 @@ bool Session::ProcessCommand()
 			std::string message = str::msg::PRINT_ROOMLIST;
 			for ( auto& room : m_server->m_rooms )
 			{
-				message = message + std::to_string( room.first ) + "	(" + std::to_string( room.second.GetChatters().size() ) + " / " + std::to_string( room.second.GetMaxPeople() ) + ")	" + room.second.GetName() + "\r\n";
+				message = message + std::to_string( room.first ) + "	(" + std::to_string( room.second.GetChatters().size() )
+					+ " / " + std::to_string( room.second.GetMaxPeople() ) + ")	" + room.second.GetName() + "\r\n";
 			}
 			SendChat( message );
 		}
@@ -376,7 +377,8 @@ bool Session::ProcessCommand()
 			if ( m_server->m_userNames.count( player ) != 0 )
 			{
 				std::string message = str::msg::PRINT_PLAYERINFO;
-				message = message + str::msg::PRINT_PLAYERINFO_NAME + player + str::msg::PRINT_PLAYERINFO_IP + m_server->m_userNames[ player ]->m_ip + str::msg::PRINT_PLAYERINFO_LOCATION;
+				message = message + str::msg::PRINT_PLAYERINFO_NAME + player + str::msg::PRINT_PLAYERINFO_IP +
+					m_server->m_userNames[ player ]->m_ip + str::msg::PRINT_PLAYERINFO_LOCATION;
 				// 로비에 있는지 판단
 				if ( m_server->m_userNames[ player ]->m_roomNumber == 0 )	message = message + str::msg::PRINT_PLAYERINFO_LOBBY;
 				else message = message + std::to_string( m_server->m_userNames[ player ]->m_roomNumber ) + str::msg::PRINT_PLAYERINFO_ROOM;
@@ -399,16 +401,19 @@ bool Session::ProcessCommand()
 			if ( roomNumber != 0 && m_server->m_rooms.count( roomNumber ) != 0 )
 			{
 				std::string message = str::msg::PRINT_ROOMINFO;
-				message = message + str::msg::PRINT_ROOMINFO_NAME + m_server->m_rooms[ roomNumber ].GetName() + str::msg::PRINT_ROOMINFO_CAPACITY + std::to_string( m_server->m_rooms[ roomNumber ].GetMaxPeople() ) + "\r\n";
+				message = message + str::msg::PRINT_ROOMINFO_NAME + m_server->m_rooms[ roomNumber ].GetName() 
+					+ str::msg::PRINT_ROOMINFO_CAPACITY + std::to_string( m_server->m_rooms[ roomNumber ].GetMaxPeople() ) + "\r\n";
 				auto time = m_server->m_rooms[ roomNumber ].GetTime();
 				struct tm localt;
 				localtime_s( &localt, &time );
-				message = message + str::msg::PRINT_ROOMINFO_PLAYER + std::to_string( m_server->m_rooms[ roomNumber ].GetChatters().size() ) + "\r\n" + str::msg::PRINT_ROOMINFO_TIME + std::to_string( localt.tm_hour ) + ":" + std::to_string( localt.tm_min ) + ":" + std::to_string( localt.tm_sec ) + "\r\n";
+				message = message + str::msg::PRINT_ROOMINFO_PLAYER + std::to_string( m_server->m_rooms[ roomNumber ].GetChatters().size() ) + "\r\n" 
+					+ str::msg::PRINT_ROOMINFO_TIME + std::to_string( localt.tm_hour ) + ":" + std::to_string( localt.tm_min ) + ":" + std::to_string( localt.tm_sec ) + "\r\n";
 				for ( auto& player : m_server->m_rooms[ roomNumber ].GetChatters() )
 				{
 					time = player->GetTime();
 					localtime_s( &localt, &time );
-					message = message + player->m_name + "	" + player->m_ip + ":" + std::to_string( player->m_port ) + "	" + std::to_string( localt.tm_hour ) + ":" + std::to_string( localt.tm_min ) + ":" + std::to_string( localt.tm_sec ) + "\r\n";
+					message = message + player->m_name + "	" + player->m_ip + ":" + std::to_string( player->m_port ) + "	" 
+						+ std::to_string( localt.tm_hour ) + ":" + std::to_string( localt.tm_min ) + ":" + std::to_string( localt.tm_sec ) + "\r\n";
 				}
 				SendChat( message );
 			}

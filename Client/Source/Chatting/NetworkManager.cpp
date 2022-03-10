@@ -37,17 +37,17 @@ void ANetworkManager::Tick(float DeltaTime)
 	Super::Tick( DeltaTime );
 	if ( !m_instance->m_isServerOff )
 	{
-		Recv();
+		DoRecv();
 	}
 	else
 	{
 		QuitClient();
 	}
 	
-
+	
 }
 
-int ANetworkManager::Recv()
+int ANetworkManager::DoRecv()
 {
 	int32 byte;
 	byte = m_instance->Recv();

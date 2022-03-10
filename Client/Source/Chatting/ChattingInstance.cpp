@@ -49,21 +49,6 @@ int UChattingInstance::Send( std::string& buffer, int32 size )
 		}
 		m_sends.pop();
 	}
-	if ( byte != 0 )
-	{
-		std::string str = (char*)m_buffer;
-		// 패킷 쪼개기
-		char* prev = (char*)m_buffer;
-		char* ptr = strstr( prev, "\n\r" );
-		while ( ptr != NULL )
-		{
-			m_packets.push( str.substr( prev - (char*)m_buffer, ptr - prev + 2 ) );
-			prev = ptr + 2;
-			ptr = strstr( ptr + 2, "\n\r" );
-		}
-		// 처리하고 남은 덩어리 저장
-		m_leftovers = str.substr( prev - (char*)m_buffer );
-	}
 	return byte;
 }
 
@@ -82,6 +67,21 @@ int UChattingInstance::Recv()
 	if ( !ret )
 	{
 		m_isServerOff = true;
+	}
+	if ( byte != 0 )
+	{
+		std::string str = (char*)m_buffer;
+		// 패킷 쪼개기
+		char* prev = (char*)m_buffer;
+		char* ptr = strstr( prev, "\n\r" );
+		while ( ptr != NULL )
+		{
+			m_packets.push( str.substr( prev - (char*)m_buffer, ptr - prev + 2 ) );
+			prev = ptr + 2;
+			ptr = strstr( ptr + 2, "\n\r" );
+		}
+		// 처리하고 남은 덩어리 저장
+		m_leftovers = str.substr( prev - (char*)m_buffer );
 	}
 	return byte;
 }

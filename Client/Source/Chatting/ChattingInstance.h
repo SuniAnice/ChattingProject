@@ -32,6 +32,8 @@ public:
 
 	int m_recvBytes = 0;
 
+	uint8 m_buffer[ BUFFER_SIZE ];
+
 	std::queue<std::string> m_packets;
 
 	std::queue<std::string> m_sends;
@@ -40,8 +42,6 @@ public:
 
 	// recv시 처리하고 남은 패킷 덩어리
 	std::string m_leftovers;
-
-	uint8 m_buffer[ BUFFER_SIZE ];
 
 	int Send( std::string& buffer, int32 size );
 
