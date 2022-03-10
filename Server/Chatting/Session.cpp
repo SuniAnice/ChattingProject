@@ -175,6 +175,10 @@ int Session::SendChat( const std::string& message )
 	while ( m_senddata.size() != 0 )
 	{
 		retVal = send( m_socket, ( m_senddata.front() + '\r' ).c_str(), m_senddata.front().size() + 1, 0 );
+		if ( retVal == SOCKET_ERROR )
+		{
+			return retVal;
+		}
 		// 전송이 중간에 잘렸으면 큐에 잘린 부분을 넣고 다음에 마저 전송한다.
 		if ( retVal != m_senddata.front().size() + 1 )
 		{
