@@ -7,7 +7,12 @@
 #include "Networking.h"
 #include "Sockets.h"
 #include "SocketSubsystem.h"
+#include <string>
+#include <queue>
 #include "ChattingInstance.generated.h"
+
+
+constexpr int BUFFER_SIZE = 1024;
 
 
 UCLASS()
@@ -22,4 +27,18 @@ public:
 	virtual void Init() override;
 
 	FSocket* m_serverSocket;
+
+	int m_recvBytes = 0;
+
+	std::queue<std::string> m_packets;
+
+	std::queue<std::string> m_sends;
+
+	std::string m_nickname;
+
+	// recv시 처리하고 남은 패킷 덩어리
+	std::string m_leftovers;
+
+	uint8 m_buffer[ BUFFER_SIZE ];
+
 };
