@@ -20,7 +20,7 @@ public:
 	ANetworkManager();
 
 	UPROPERTY( BlueprintReadWrite )
-	UChattingInstance* m_instance;
+	UChattingInstance* m_instance = nullptr;
 
 protected:
 	// Called when the game starts or when spawned

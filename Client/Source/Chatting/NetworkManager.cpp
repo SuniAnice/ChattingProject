@@ -29,6 +29,7 @@ void ANetworkManager::BeginPlay()
 {
 	Super::BeginPlay();
 	m_instance = Cast< UChattingInstance >( GetWorld()->GetGameInstance() );
+	if ( m_instance == nullptr )		QuitClient();
 }
 
 // Called every frame

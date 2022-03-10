@@ -30,7 +30,7 @@ public:
 
 	bool m_isServerOff = false;
 
-	FSocket* m_serverSocket;
+	FSocket* m_serverSocket = nullptr;
 
 	int m_recvBytes = 0;
 

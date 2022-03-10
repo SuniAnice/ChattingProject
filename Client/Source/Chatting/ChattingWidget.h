@@ -18,5 +18,5 @@ public:
 		void SendChat( FString string );
 
 	UPROPERTY( EditAnywhere, BlueprintReadWrite )
-		ANetworkManager* m_manager;
+		ANetworkManager* m_manager = nullptr;
 };
