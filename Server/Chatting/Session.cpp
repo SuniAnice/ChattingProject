@@ -7,6 +7,7 @@
 #include "Scene.h"
 #include "Session.h"
 #include "StringTable.h"
+#include <iostream>
 #include <sstream>
 #include <locale.h>
 
@@ -158,6 +159,7 @@ int Session::Recv()
 	std::string tmp = m_buffer;
 	char* prev = m_buffer;
 	char* ptr = strstr( prev, "\n");
+
 	
 	// 엔터키가 입력되었을 경우
 	while ( ptr != NULL )
@@ -165,6 +167,7 @@ int Session::Recv()
 		m_packets.push( tmp.substr( prev - m_buffer, ptr - prev + 1 ) );
 		prev = ptr + 1;
 		ptr = strstr( ptr + 1, "\n" );
+		std::cout << "Data received from " << m_ip << " : "  << m_port << " - " << m_buffer << std::endl;
 		m_isProcessing = true;
 	}
 
